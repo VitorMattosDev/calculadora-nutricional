@@ -1,2179 +1,1222 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NutriPlano — Planejamento alimentar por objetivo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet">
-  <style>
-    :root {
-      --paper: #F6F7F2;
-      --card: #FFFFFF;
-      --ink: #16261D;
-      --ink-soft: #54655C;
-      --verde: #117A46;
-      --verde-claro: #E5F2E9;
-      --verde-escuro: #0B3B23;
-      --lima: #C5E94F;
-      --papaia: #E8650D;
-      --papaia-claro: #FCEDE0;
-      --linha: #DCE3D9;
-      --raio: 14px;
-      --sombra: 0 1px 2px rgba(22, 38, 29, .06), 0 8px 24px rgba(22, 38, 29, .07);
-      --mono: 'IBM Plex Mono', monospace;
-      --display: 'Bricolage Grotesque', sans-serif;
-      --body: 'Instrument Sans', sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
-    }
-
-    html {
-      scroll-behavior: smooth
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto
-      }
-
-      * {
-        transition: none !important;
-        animation: none !important
-      }
-    }
-
-    body {
-      background: var(--paper);
-      color: var(--ink);
-      font-family: var(--body);
-      font-size: 16px;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased
-    }
-
-    button {
-      font-family: var(--body);
-      cursor: pointer
-    }
-
-    input,
-    select {
-      font-family: var(--body)
-    }
-
-    :focus-visible {
-      outline: 3px solid var(--verde);
-      outline-offset: 2px;
-      border-radius: 4px
-    }
-
-    /* ---------- Cabeçalho ---------- */
-    .topo {
-      border-bottom: 1px solid var(--linha);
-      background: var(--paper);
-      position: sticky;
-      top: 0;
-      z-index: 40
-    }
-
-    .topo-in {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px
-    }
-
-    .logo {
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: 1.35rem;
-      letter-spacing: -.02em;
-      display: flex;
-      align-items: center;
-      gap: 9px
-    }
-
-    .logo .folha {
-      width: 26px;
-      height: 26px;
-      border-radius: 50% 50% 50% 4px;
-      background: var(--verde);
-      display: inline-block;
-      position: relative;
-      transform: rotate(45deg)
-    }
-
-    .logo .folha::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 15%;
-      width: 2px;
-      height: 70%;
-      background: var(--lima);
-      transform: translateX(-50%)
-    }
-
-    .topo .tag {
-      font-size: .8rem;
-      color: var(--ink-soft);
-      border-left: 1px solid var(--linha);
-      padding-left: 12px;
-      margin-left: 2px
-    }
-
-    .topo-acoes {
-      margin-left: auto;
-      display: flex;
-      gap: 8px
-    }
-
-    /* ---------- Botões ---------- */
-    .btn {
-      border: none;
-      border-radius: 999px;
-      padding: 11px 20px;
-      font-weight: 600;
-      font-size: .95rem;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease
-    }
-
-    .btn:active {
-      transform: scale(.97)
-    }
-
-    .btn-verde {
-      background: var(--verde);
-      color: #fff
-    }
-
-    .btn-verde:hover {
-      background: var(--verde-escuro)
-    }
-
-    .btn-fant {
-      background: transparent;
-      color: var(--verde-escuro);
-      border: 1.5px solid var(--linha)
-    }
-
-    .btn-fant:hover {
-      border-color: var(--verde);
-      background: var(--verde-claro)
-    }
-
-    .btn-mini {
-      padding: 7px 14px;
-      font-size: .85rem
-    }
-
-    .btn[disabled] {
-      opacity: .45;
-      cursor: not-allowed
-    }
-
-    /* ---------- Etapa 1 ---------- */
-    .wrap {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 20px
-    }
-
-    #etapa1 .hero {
-      padding: 56px 0 36px;
-      max-width: 720px
-    }
-
-    #etapa1 .hero .olho {
-      font-family: var(--mono);
-      font-size: .78rem;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--verde);
-      margin-bottom: 14px
-    }
-
-    #etapa1 h1 {
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      line-height: 1.05;
-      letter-spacing: -.025em
-    }
-
-    #etapa1 h1 em {
-      font-style: normal;
-      color: var(--verde);
-      position: relative
-    }
-
-    #etapa1 .hero p {
-      margin-top: 16px;
-      color: var(--ink-soft);
-      font-size: 1.05rem;
-      max-width: 560px
-    }
-
-    .form-card {
-      background: var(--card);
-      border: 1px solid var(--linha);
-      border-radius: 20px;
-      box-shadow: var(--sombra);
-      padding: 30px;
-      margin-bottom: 64px
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px
-    }
-
-    .campo label {
-      display: block;
-      font-weight: 600;
-      font-size: .88rem;
-      margin-bottom: 6px
-    }
-
-    .campo .dica {
-      font-weight: 400;
-      color: var(--ink-soft);
-      font-size: .78rem;
-      display: block;
-      margin-top: 2px
-    }
-
-    .campo input {
-      width: 100%;
-      border: 1.5px solid var(--linha);
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: 1rem;
-      background: #fff;
-      font-family: var(--mono)
-    }
-
-    .campo input:focus {
-      border-color: var(--verde);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(17, 122, 70, .15)
-    }
-
-    .campo select {
-      width: 100%;
-      border: 1.5px solid var(--linha);
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-size: .95rem;
-      background: #fff
-    }
-
-    .campo select:focus {
-      border-color: var(--verde);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(17, 122, 70, .15)
-    }
-
-    .metodo {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap
-    }
-
-    .metodo .opc {
-      flex: 1;
-      min-width: 250px;
-      border: 1.5px solid var(--linha);
-      border-radius: var(--raio);
-      padding: 15px 17px;
-      background: #fff;
-      text-align: left;
-      transition: border-color .12s, background .12s
-    }
-
-    .metodo .opc:hover {
-      border-color: var(--verde)
-    }
-
-    .metodo .opc.ativo {
-      border-color: var(--verde);
-      background: var(--verde-claro);
-      box-shadow: inset 0 0 0 1px var(--verde)
-    }
-
-    .metodo .opc .t {
-      font-weight: 700;
-      font-size: .95rem;
-      display: block
-    }
-
-    .metodo .opc .d {
-      font-size: .8rem;
-      color: var(--ink-soft);
-      margin-top: 4px;
-      display: block
-    }
-
-    .alerta {
-      background: var(--papaia-claro);
-      border: 1px solid #F3C9A3;
-      color: #8A4A0C;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: .86rem;
-      margin-top: 14px;
-      width: 100%;
-      line-height: 1.5
-    }
-
-    .alerta b {
-      display: block;
-      margin-bottom: 3px
-    }
-
-    .sec-titulo {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.15rem;
-      margin: 30px 0 14px;
-      letter-spacing: -.01em
-    }
-
-    .objetivos {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px
-    }
-
-    .obj {
-      border: 1.5px solid var(--linha);
-      border-radius: var(--raio);
-      padding: 18px;
-      background: #fff;
-      text-align: left;
-      transition: border-color .12s, background .12s, transform .12s
-    }
-
-    .obj:hover {
-      border-color: var(--verde)
-    }
-
-    .obj.ativo {
-      border-color: var(--verde);
-      background: var(--verde-claro);
-      box-shadow: inset 0 0 0 1px var(--verde)
-    }
-
-    .obj .nome {
-      font-weight: 700;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 8px
-    }
-
-    .obj .nome .ic {
-      font-size: 1.15rem
-    }
-
-    .obj .desc {
-      color: var(--ink-soft);
-      font-size: .86rem;
-      margin-top: 5px
-    }
-
-    .obj .formula {
-      font-family: var(--mono);
-      font-size: .76rem;
-      color: var(--verde-escuro);
-      background: rgba(17, 122, 70, .08);
-      border-radius: 6px;
-      padding: 3px 8px;
-      display: inline-block;
-      margin-top: 9px
-    }
-
-    #campo-meta {
-      display: none;
-      margin-top: 18px;
-      max-width: 300px
-    }
-
-    #campo-meta.visivel {
-      display: block
-    }
-
-    .form-acoes {
-      margin-top: 28px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap
-    }
-
-    .form-acoes .aviso {
-      font-size: .8rem;
-      color: var(--ink-soft);
-      max-width: 460px
-    }
-
-    /* ---------- Etapa 2 ---------- */
-    #etapa2 {
-      display: none;
-      padding-bottom: 80px
-    }
-
-    .resumo-perfil {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      padding: 22px 0 6px
-    }
-
-    .resumo-perfil h2 {
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      letter-spacing: -.02em;
-      margin-right: auto
-    }
-
-    .chip {
-      font-family: var(--mono);
-      font-size: .78rem;
-      background: #fff;
-      border: 1px solid var(--linha);
-      border-radius: 999px;
-      padding: 6px 12px;
-      color: var(--ink-soft)
-    }
-
-    .chip b {
-      color: var(--ink)
-    }
-
-    .chip.obj-chip {
-      background: var(--verde-escuro);
-      color: #fff;
-      border-color: var(--verde-escuro)
-    }
-
-    .chip.obj-chip b {
-      color: var(--lima)
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 26px;
-      align-items: start;
-      margin-top: 18px
-    }
-
-    /* refeições */
-    .refeicao {
-      background: var(--card);
-      border: 1px solid var(--linha);
-      border-radius: var(--raio);
-      box-shadow: var(--sombra);
-      margin-bottom: 18px;
-      overflow: hidden;
-      border-left: 5px solid var(--verde)
-    }
-
-    .ref-cab {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 15px 18px;
-      border-bottom: 1px dashed var(--linha)
-    }
-
-    .ref-cab input.nome-ref {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.08rem;
-      border: none;
-      background: transparent;
-      color: var(--ink);
-      width: 100%;
-      min-width: 0;
-      letter-spacing: -.01em
-    }
-
-    .ref-cab input.nome-ref:focus {
-      outline: none;
-      border-bottom: 2px solid var(--verde)
-    }
-
-    .ref-kcal {
-      font-family: var(--mono);
-      font-size: .82rem;
-      color: var(--ink-soft);
-      white-space: nowrap
-    }
-
-    .ref-kcal b {
-      color: var(--verde-escuro);
-      font-size: .95rem
-    }
-
-    .btn-x {
-      background: transparent;
-      border: none;
-      color: var(--ink-soft);
-      font-size: 1.05rem;
-      padding: 4px 8px;
-      border-radius: 8px
-    }
-
-    .btn-x:hover {
-      background: var(--papaia-claro);
-      color: var(--papaia)
-    }
-
-    .itens {
-      list-style: none
-    }
-
-    .item {
-      display: grid;
-      grid-template-columns: 1fr 96px auto auto auto;
-      gap: 8px;
-      align-items: center;
-      padding: 11px 18px;
-      border-bottom: 1px solid #F0F3EE;
-      font-size: .93rem
-    }
-
-    .item:last-child {
-      border-bottom: none
-    }
-
-    .item .al-nome {
-      font-weight: 600
-    }
-
-    .item .al-medida {
-      display: block;
-      font-weight: 400;
-      font-size: .76rem;
-      color: var(--ink-soft)
-    }
-
-    .item input.qtd {
-      width: 100%;
-      border: 1.5px solid var(--linha);
-      border-radius: 8px;
-      padding: 7px 8px;
-      font-family: var(--mono);
-      font-size: .88rem;
-      text-align: right
-    }
-
-    .item input.qtd:focus {
-      border-color: var(--verde);
-      outline: none
-    }
-
-    .item .macros {
-      font-family: var(--mono);
-      font-size: .72rem;
-      color: var(--ink-soft);
-      text-align: right;
-      line-height: 1.5;
-      white-space: nowrap
-    }
-
-    .item .macros b {
-      color: var(--ink);
-      font-size: .85rem
-    }
-
-    .vazio {
-      padding: 18px;
-      color: var(--ink-soft);
-      font-size: .88rem;
-      text-align: center
-    }
-
-    .ref-pe {
-      padding: 12px 18px;
-      background: #FBFCF9
-    }
-
-    .btn-add-alimento {
-      width: 100%;
-      border: 1.5px dashed var(--linha);
-      background: transparent;
-      border-radius: 10px;
-      padding: 10px;
-      font-weight: 600;
-      color: var(--verde-escuro);
-      font-size: .9rem
-    }
-
-    .btn-add-alimento:hover {
-      border-color: var(--verde);
-      background: var(--verde-claro)
-    }
-
-    #btn-nova-ref {
-      width: 100%;
-      margin-top: 4px
-    }
-
-    /* ---------- Painel do dia (assinatura) ---------- */
-    .painel {
-      position: sticky;
-      top: 78px;
-      background: var(--verde-escuro);
-      color: #fff;
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: var(--sombra)
-    }
-
-    .painel h3 {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.05rem;
-      letter-spacing: -.01em;
-      display: flex;
-      align-items: center;
-      gap: 8px
-    }
-
-    .painel h3 .ponto {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--lima);
-      display: inline-block;
-      animation: pulsa 2.4s ease-in-out infinite
-    }
-
-    @keyframes pulsa {
-
-      0%,
-      100% {
-        opacity: 1
-      }
-
-      50% {
-        opacity: .35
-      }
-    }
-
-    .anel-area {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      margin: 18px 0 8px
-    }
-
-    .anel-svg {
-      width: 120px;
-      height: 120px;
-      flex: none
-    }
-
-    .anel-svg .trilha {
-      stroke: rgba(255, 255, 255, .14)
-    }
-
-    .anel-svg .prog {
-      stroke: var(--lima);
-      transition: stroke-dashoffset .45s ease, stroke .3s
-    }
-
-    .anel-svg .prog.estourou {
-      stroke: var(--papaia)
-    }
-
-    .anel-num {
-      font-family: var(--mono)
-    }
-
-    .anel-num .grande {
-      font-size: 1.5rem;
-      font-weight: 600;
-      display: block;
-      line-height: 1.1
-    }
-
-    .anel-num .resto {
-      font-size: .74rem;
-      color: rgba(255, 255, 255, .65);
-      display: block;
-      margin-top: 4px
-    }
-
-    .anel-num .resto b {
-      color: var(--lima)
-    }
-
-    .barras {
-      margin-top: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 13px
-    }
-
-    .barra .topo-b {
-      display: flex;
-      justify-content: space-between;
-      font-size: .78rem;
-      margin-bottom: 5px
-    }
-
-    .barra .topo-b .lab {
-      font-weight: 600
-    }
-
-    .barra .topo-b .num {
-      font-family: var(--mono);
-      color: rgba(255, 255, 255, .75)
-    }
-
-    .barra .trilho {
-      height: 9px;
-      border-radius: 99px;
-      background: rgba(255, 255, 255, .13);
-      overflow: hidden
-    }
-
-    .barra .fill {
-      height: 100%;
-      border-radius: 99px;
-      background: var(--lima);
-      width: 0%;
-      transition: width .45s ease, background .3s
-    }
-
-    .barra .fill.estourou {
-      background: var(--papaia)
-    }
-
-    .barra .fill.ok {
-      background: #7ED98F
-    }
-
-    .agua {
-      margin-top: 18px;
-      border-top: 1px dashed rgba(255, 255, 255, .22);
-      padding-top: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: .85rem
-    }
-
-    .agua .gota {
-      font-size: 1.3rem
-    }
-
-    .agua b {
-      font-family: var(--mono)
-    }
-
-    .sug {
-      margin-top: 16px;
-      border-top: 1px dashed rgba(255, 255, 255, .22);
-      padding-top: 14px
-    }
-
-    .sug h4 {
-      font-size: .86rem;
-      font-weight: 700;
-      display: flex;
-      gap: 7px;
-      align-items: center;
-      margin-bottom: 9px
-    }
-
-    .sug .falta {
-      font-size: .8rem;
-      color: rgba(255, 255, 255, .75);
-      margin: 9px 0 8px
-    }
-
-    .sug .falta b {
-      color: var(--lima);
-      font-family: var(--mono)
-    }
-
-    .sug-lista {
-      display: flex;
-      flex-direction: column;
-      gap: 7px
-    }
-
-    .sug-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255, 255, 255, .08);
-      border: 1px solid rgba(255, 255, 255, .14);
-      border-radius: 11px;
-      padding: 9px 11px;
-      color: #fff;
-      text-align: left;
-      font-size: .8rem;
-      transition: background .12s;
-      width: 100%
-    }
-
-    .sug-item:hover {
-      background: rgba(255, 255, 255, .17)
-    }
-
-    .sug-item .mais {
-      flex: none;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--lima);
-      color: var(--verde-escuro);
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .95rem
-    }
-
-    .sug-item .det {
-      font-family: var(--mono);
-      font-size: .7rem;
-      color: rgba(255, 255, 255, .65);
-      display: block;
-      margin-top: 2px
-    }
-
-    .sug .nota-sug {
-      font-size: .68rem;
-      color: rgba(255, 255, 255, .5);
-      margin-top: 8px
-    }
-
-    .sug .fechado {
-      font-size: .86rem;
-      color: var(--lima);
-      font-weight: 600
-    }
-
-    .sug .excesso {
-      font-size: .8rem;
-      color: #FFB27D;
-      line-height: 1.55
-    }
-
-    .sug .excesso b {
-      font-family: var(--mono)
-    }
-
-    .btn-troca {
-      background: transparent;
-      border: none;
-      color: var(--ink-soft);
-      font-size: 1rem;
-      padding: 4px 7px;
-      border-radius: 8px
-    }
-
-    .btn-troca:hover {
-      background: var(--verde-claro);
-      color: var(--verde-escuro)
-    }
-
-    .al-card .eq {
-      grid-row: 1/3;
-      align-self: center;
-      text-align: right
-    }
-
-    .al-card .eq .g-eq {
-      font-family: var(--mono);
-      font-weight: 600;
-      font-size: .95rem;
-      color: var(--verde-escuro);
-      display: block
-    }
-
-    .al-card .eq .m-eq {
-      font-family: var(--mono);
-      font-size: .7rem;
-      color: var(--ink-soft)
-    }
-
-    .painel-acoes {
-      margin-top: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 9px
-    }
-
-    .btn-lima {
-      background: var(--lima);
-      color: var(--verde-escuro)
-    }
-
-    .btn-lima:hover {
-      background: #d6f56d
-    }
-
-    .btn-borda-clara {
-      background: transparent;
-      color: #fff;
-      border: 1.5px solid rgba(255, 255, 255, .35)
-    }
-
-    .btn-borda-clara:hover {
-      border-color: #fff
-    }
-
-    .nota-painel {
-      font-size: .72rem;
-      color: rgba(255, 255, 255, .55);
-      margin-top: 12px;
-      line-height: 1.45
-    }
-
-    /* ---------- Modal de alimentos ---------- */
-    .modal-fundo {
-      position: fixed;
-      inset: 0;
-      background: rgba(11, 29, 19, .45);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      z-index: 90;
-      padding: 0
-    }
-
-    .modal-fundo.aberto {
-      display: flex
-    }
-
-    .modal {
-      background: var(--card);
-      width: 100%;
-      max-width: 640px;
-      max-height: 86vh;
-      border-radius: 20px 20px 0 0;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      animation: sobe .22s ease
-    }
-
-    @keyframes sobe {
-      from {
-        transform: translateY(28px);
-        opacity: 0
-      }
-
-      to {
-        transform: translateY(0);
-        opacity: 1
-      }
-    }
-
-    @media (min-width:700px) {
-      .modal-fundo {
-        align-items: center;
-        padding: 24px
-      }
-
-      .modal {
-        border-radius: 20px
-      }
-    }
-
-    .modal-cab {
-      padding: 18px 22px 12px;
-      border-bottom: 1px solid var(--linha)
-    }
-
-    .modal-cab .linha1 {
-      display: flex;
-      align-items: center;
-      gap: 10px
-    }
-
-    .modal-cab h4 {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.1rem;
-      margin-right: auto
-    }
-
-    .modal-cab input.busca {
-      width: 100%;
-      margin-top: 12px;
-      border: 1.5px solid var(--linha);
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-size: .95rem
-    }
-
-    .modal-cab input.busca:focus {
-      border-color: var(--verde);
-      outline: none
-    }
-
-    .cats {
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding: 12px 0 4px;
-      scrollbar-width: none
-    }
-
-    .cats::-webkit-scrollbar {
-      display: none
-    }
-
-    .cat {
-      flex: none;
-      border: 1.5px solid var(--linha);
-      background: #fff;
-      border-radius: 999px;
-      padding: 6px 13px;
-      font-size: .8rem;
-      font-weight: 600;
-      color: var(--ink-soft)
-    }
-
-    .cat.ativa {
-      background: var(--verde);
-      border-color: var(--verde);
-      color: #fff
-    }
-
-    .lista-alimentos {
-      overflow-y: auto;
-      padding: 8px 10px 18px;
-      flex: 1
-    }
-
-    .al-card {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 4px 12px;
-      text-align: left;
-      background: transparent;
-      border: none;
-      border-radius: 12px;
-      padding: 12px;
-      border-bottom: 1px solid #F0F3EE
-    }
-
-    .al-card:hover {
-      background: var(--verde-claro)
-    }
-
-    .al-card .n {
-      font-weight: 600;
-      font-size: .95rem
-    }
-
-    .al-card .m {
-      grid-column: 1;
-      font-size: .76rem;
-      color: var(--ink-soft)
-    }
-
-    .al-card .k {
-      grid-row: 1/3;
-      align-self: center;
-      font-family: var(--mono);
-      font-size: .8rem;
-      color: var(--verde-escuro);
-      text-align: right;
-      line-height: 1.45
-    }
-
-    .qtd-painel {
-      padding: 18px 22px;
-      border-top: 1px solid var(--linha);
-      background: #FBFCF9;
-      display: none
-    }
-
-    .qtd-painel.aberto {
-      display: block
-    }
-
-    .qtd-painel .sel-nome {
-      font-weight: 700;
-      margin-bottom: 4px
-    }
-
-    .qtd-painel .sel-medida {
-      font-size: .8rem;
-      color: var(--ink-soft);
-      margin-bottom: 12px
-    }
-
-    .qtd-linha {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap
-    }
-
-    .qtd-linha input {
-      width: 110px;
-      border: 1.5px solid var(--linha);
-      border-radius: 10px;
-      padding: 10px;
-      font-family: var(--mono);
-      font-size: 1rem;
-      text-align: right
-    }
-
-    .qtd-linha input:focus {
-      border-color: var(--verde);
-      outline: none
-    }
-
-    .qtd-linha .un {
-      font-size: .9rem;
-      color: var(--ink-soft)
-    }
-
-    .porcoes {
-      display: flex;
-      gap: 7px;
-      margin: 10px 0 14px;
-      flex-wrap: wrap
-    }
-
-    .porcao {
-      border: 1.5px solid var(--linha);
-      background: #fff;
-      border-radius: 999px;
-      padding: 5px 12px;
-      font-size: .78rem;
-      font-family: var(--mono)
-    }
-
-    .porcao:hover {
-      border-color: var(--verde);
-      background: var(--verde-claro)
-    }
-
-    .previa {
-      font-family: var(--mono);
-      font-size: .78rem;
-      color: var(--ink-soft);
-      margin-bottom: 14px
-    }
-
-    .previa b {
-      color: var(--ink)
-    }
-
-    /* ---------- Folha de impressão ---------- */
-    #folha {
-      display: none
-    }
-
-    @media print {
-      body {
-        background: #fff
-      }
-
-      .topo,
-      #etapa1,
-      #etapa2,
-      .modal-fundo {
-        display: none !important
-      }
-
-      #folha {
-        display: block;
-        font-family: var(--body);
-        color: #111;
-        padding: 0;
-        font-size: 12px
-      }
-
-      #folha .f-cab {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        border-bottom: 3px solid #0B3B23;
-        padding-bottom: 10px;
-        margin-bottom: 14px
-      }
-
-      #folha .f-logo {
-        font-family: var(--display);
-        font-weight: 800;
-        font-size: 20px;
-        color: #0B3B23
-      }
-
-      #folha .f-data {
-        font-family: var(--mono);
-        font-size: 11px;
-        color: #555;
-        text-align: right
-      }
-
-      #folha h2 {
-        font-family: var(--display);
-        font-size: 15px;
-        margin: 14px 0 6px;
-        color: #0B3B23
-      }
-
-      #folha .f-perfil {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px 18px;
-        font-size: 11.5px;
-        margin-bottom: 4px
-      }
-
-      #folha .f-perfil span b {
-        font-family: var(--mono)
-      }
-
-      #folha table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 4px
-      }
-
-      #folha th,
-      #folha td {
-        border: 1px solid #C9D2C6;
-        padding: 5px 8px;
-        text-align: left;
-        font-size: 11px
-      }
-
-      #folha th {
-        background: #E5F2E9;
-        font-weight: 700
-      }
-
-      #folha td.num,
-      #folha th.num {
-        text-align: right;
-        font-family: var(--mono)
-      }
-
-      #folha .f-ref-nome {
-        background: #0B3B23;
-        color: #fff;
-        font-weight: 700;
-        padding: 5px 8px
-      }
-
-      #folha .f-sub td {
-        background: #F2F6F0;
-        font-weight: 700
-      }
-
-      #folha .f-total td {
-        background: #0B3B23;
-        color: #fff;
-        font-weight: 700
-      }
-
-      #folha .f-metas {
-        margin-top: 6px
-      }
-
-      #folha .f-nota {
-        margin-top: 14px;
-        font-size: 10px;
-        color: #666;
-        border-top: 1px solid #C9D2C6;
-        padding-top: 8px
-      }
-
-      #folha .f-status-ok {
-        color: #0B7A3E;
-        font-weight: 700
-      }
-
-      #folha .f-status-falta {
-        color: #B45309;
-        font-weight: 700
-      }
-
-      #folha .f-status-acima {
-        color: #C2410C;
-        font-weight: 700
-      }
-    }
-
-    /* ---------- Responsivo ---------- */
-    @media (max-width:980px) {
-      .layout {
-        grid-template-columns: 1fr
-      }
-
-      .painel {
-        position: static
-      }
-
-      .form-grid {
-        grid-template-columns: repeat(2, 1fr)
-      }
-    }
-
-    @media (max-width:560px) {
-      .form-grid {
-        grid-template-columns: 1fr
-      }
-
-      .objetivos {
-        grid-template-columns: 1fr
-      }
-
-      .item {
-        grid-template-columns: 1fr 76px auto auto;
-        grid-template-rows: auto auto
-      }
-
-      .item .macros {
-        grid-column: 1/5;
-        text-align: left;
-        white-space: normal
-      }
-
-      .topo .tag {
-        display: none
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriPlano — Planejamento alimentar por objetivo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F7F2;
+  --card:#FFFFFF;
+  --ink:#16261D;
+  --ink-soft:#54655C;
+  --verde:#117A46;
+  --verde-claro:#E5F2E9;
+  --verde-escuro:#0B3B23;
+  --lima:#C5E94F;
+  --papaia:#E8650D;
+  --papaia-claro:#FCEDE0;
+  --linha:#DCE3D9;
+  --raio:14px;
+  --sombra:0 1px 2px rgba(22,38,29,.06), 0 8px 24px rgba(22,38,29,.07);
+  --mono:'IBM Plex Mono',monospace;
+  --display:'Bricolage Grotesque',sans-serif;
+  --body:'Instrument Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:var(--body);cursor:pointer}
+input,select{font-family:var(--body)}
+:focus-visible{outline:3px solid var(--verde);outline-offset:2px;border-radius:4px}
+
+/* ---------- Cabeçalho ---------- */
+.topo{border-bottom:1px solid var(--linha);background:var(--paper);position:sticky;top:0;z-index:40}
+.topo-in{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.logo{font-family:var(--display);font-weight:800;font-size:1.35rem;letter-spacing:-.02em;display:flex;align-items:center;gap:9px}
+.logo .folha{width:26px;height:26px;border-radius:50% 50% 50% 4px;background:var(--verde);display:inline-block;position:relative;transform:rotate(45deg)}
+.logo .folha::after{content:"";position:absolute;left:50%;top:15%;width:2px;height:70%;background:var(--lima);transform:translateX(-50%)}
+.topo .tag{font-size:.8rem;color:var(--ink-soft);border-left:1px solid var(--linha);padding-left:12px;margin-left:2px}
+.topo-acoes{margin-left:auto;display:flex;gap:8px}
+
+/* ---------- Botões ---------- */
+.btn{border:none;border-radius:999px;padding:11px 20px;font-weight:600;font-size:.95rem;transition:transform .12s ease, box-shadow .12s ease, background .12s ease}
+.btn:active{transform:scale(.97)}
+.btn-verde{background:var(--verde);color:#fff}
+.btn-verde:hover{background:var(--verde-escuro)}
+.btn-fant{background:transparent;color:var(--verde-escuro);border:1.5px solid var(--linha)}
+.btn-fant:hover{border-color:var(--verde);background:var(--verde-claro)}
+.btn-mini{padding:7px 14px;font-size:.85rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* ---------- Etapa 1 ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+#etapa1 .hero{padding:56px 0 36px;max-width:720px}
+#etapa1 .hero .olho{font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--verde);margin-bottom:14px}
+#etapa1 h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5vw,3.2rem);line-height:1.05;letter-spacing:-.025em}
+#etapa1 h1 em{font-style:normal;color:var(--verde);position:relative}
+#etapa1 .hero p{margin-top:16px;color:var(--ink-soft);font-size:1.05rem;max-width:560px}
+
+.form-card{background:var(--card);border:1px solid var(--linha);border-radius:20px;box-shadow:var(--sombra);padding:30px;margin-bottom:64px}
+.form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.campo label{display:block;font-weight:600;font-size:.88rem;margin-bottom:6px}
+.campo .dica{font-weight:400;color:var(--ink-soft);font-size:.78rem;display:block;margin-top:2px}
+.campo input{width:100%;border:1.5px solid var(--linha);border-radius:10px;padding:12px 14px;font-size:1rem;background:#fff;font-family:var(--mono)}
+.campo input:focus{border-color:var(--verde);outline:none;box-shadow:0 0 0 3px rgba(17,122,70,.15)}
+.campo select{width:100%;border:1.5px solid var(--linha);border-radius:10px;padding:12px 14px;font-size:.95rem;background:#fff}
+.campo select:focus{border-color:var(--verde);outline:none;box-shadow:0 0 0 3px rgba(17,122,70,.15)}
+.metodo{display:flex;gap:12px;flex-wrap:wrap}
+.metodo .opc{flex:1;min-width:250px;border:1.5px solid var(--linha);border-radius:var(--raio);padding:15px 17px;background:#fff;text-align:left;transition:border-color .12s, background .12s}
+.metodo .opc:hover{border-color:var(--verde)}
+.metodo .opc.ativo{border-color:var(--verde);background:var(--verde-claro);box-shadow:inset 0 0 0 1px var(--verde)}
+.metodo .opc .t{font-weight:700;font-size:.95rem;display:block}
+.metodo .opc .d{font-size:.8rem;color:var(--ink-soft);margin-top:4px;display:block}
+.alerta{background:var(--papaia-claro);border:1px solid #F3C9A3;color:#8A4A0C;border-radius:12px;padding:12px 16px;font-size:.86rem;margin-top:14px;width:100%;line-height:1.5}
+.alerta b{display:block;margin-bottom:3px}
+.sec-titulo{font-family:var(--display);font-weight:700;font-size:1.15rem;margin:30px 0 14px;letter-spacing:-.01em}
+.objetivos{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.obj{border:1.5px solid var(--linha);border-radius:var(--raio);padding:18px;background:#fff;text-align:left;transition:border-color .12s, background .12s, transform .12s}
+.obj:hover{border-color:var(--verde)}
+.obj.ativo{border-color:var(--verde);background:var(--verde-claro);box-shadow:inset 0 0 0 1px var(--verde)}
+.obj .nome{font-weight:700;font-size:1rem;display:flex;align-items:center;gap:8px}
+.obj .nome .ic{font-size:1.15rem}
+.obj .desc{color:var(--ink-soft);font-size:.86rem;margin-top:5px}
+.obj .formula{font-family:var(--mono);font-size:.76rem;color:var(--verde-escuro);background:rgba(17,122,70,.08);border-radius:6px;padding:3px 8px;display:inline-block;margin-top:9px}
+#campo-meta{display:none;margin-top:18px;max-width:300px}
+#campo-meta.visivel{display:block}
+.form-acoes{margin-top:28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.form-acoes .aviso{font-size:.8rem;color:var(--ink-soft);max-width:460px}
+
+/* ---------- Etapa 2 ---------- */
+#etapa2{display:none;padding-bottom:80px}
+.resumo-perfil{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:22px 0 6px}
+.resumo-perfil h2{font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.02em;margin-right:auto}
+.chip{font-family:var(--mono);font-size:.78rem;background:#fff;border:1px solid var(--linha);border-radius:999px;padding:6px 12px;color:var(--ink-soft)}
+.chip b{color:var(--ink)}
+.chip.obj-chip{background:var(--verde-escuro);color:#fff;border-color:var(--verde-escuro)}
+.chip.obj-chip b{color:var(--lima)}
+
+.layout{display:grid;grid-template-columns:1fr 360px;gap:26px;align-items:start;margin-top:18px}
+
+/* refeições */
+.refeicao{background:var(--card);border:1px solid var(--linha);border-radius:var(--raio);box-shadow:var(--sombra);margin-bottom:18px;overflow:hidden;border-left:5px solid var(--verde)}
+.ref-cab{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px dashed var(--linha)}
+.ref-cab input.nome-ref{font-family:var(--display);font-weight:700;font-size:1.08rem;border:none;background:transparent;color:var(--ink);width:100%;min-width:0;letter-spacing:-.01em}
+.ref-cab input.nome-ref:focus{outline:none;border-bottom:2px solid var(--verde)}
+.ref-kcal{font-family:var(--mono);font-size:.82rem;color:var(--ink-soft);white-space:nowrap}
+.ref-kcal b{color:var(--verde-escuro);font-size:.95rem}
+.btn-x{background:transparent;border:none;color:var(--ink-soft);font-size:1.05rem;padding:4px 8px;border-radius:8px}
+.btn-x:hover{background:var(--papaia-claro);color:var(--papaia)}
+.itens{list-style:none}
+.item{display:grid;grid-template-columns:1fr 96px auto auto auto;gap:8px;align-items:center;padding:11px 18px;border-bottom:1px solid #F0F3EE;font-size:.93rem}
+.item:last-child{border-bottom:none}
+.item .al-nome{font-weight:600}
+.item .al-medida{display:block;font-weight:400;font-size:.76rem;color:var(--ink-soft)}
+.item input.qtd{width:100%;border:1.5px solid var(--linha);border-radius:8px;padding:7px 8px;font-family:var(--mono);font-size:.88rem;text-align:right}
+.item input.qtd:focus{border-color:var(--verde);outline:none}
+.item .macros{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);text-align:right;line-height:1.5;white-space:nowrap}
+.item .macros b{color:var(--ink);font-size:.85rem}
+.vazio{padding:18px;color:var(--ink-soft);font-size:.88rem;text-align:center}
+.ref-pe{padding:12px 18px;background:#FBFCF9}
+.btn-add-alimento{width:100%;border:1.5px dashed var(--linha);background:transparent;border-radius:10px;padding:10px;font-weight:600;color:var(--verde-escuro);font-size:.9rem}
+.btn-add-alimento:hover{border-color:var(--verde);background:var(--verde-claro)}
+#btn-nova-ref{width:100%;margin-top:4px}
+
+/* ---------- Painel do dia (assinatura) ---------- */
+.painel{position:sticky;top:78px;background:var(--verde-escuro);color:#fff;border-radius:20px;padding:24px;box-shadow:var(--sombra)}
+.painel h3{font-family:var(--display);font-weight:700;font-size:1.05rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.painel h3 .ponto{width:9px;height:9px;border-radius:50%;background:var(--lima);display:inline-block;animation:pulsa 2.4s ease-in-out infinite}
+@keyframes pulsa{0%,100%{opacity:1}50%{opacity:.35}}
+.anel-area{display:flex;align-items:center;gap:18px;margin:18px 0 8px}
+.anel-svg{width:120px;height:120px;flex:none}
+.anel-svg .trilha{stroke:rgba(255,255,255,.14)}
+.anel-svg .prog{stroke:var(--lima);transition:stroke-dashoffset .45s ease, stroke .3s}
+.anel-svg .prog.estourou{stroke:var(--papaia)}
+.anel-num{font-family:var(--mono)}
+.anel-num .grande{font-size:1.5rem;font-weight:600;display:block;line-height:1.1}
+.anel-num .resto{font-size:.74rem;color:rgba(255,255,255,.65);display:block;margin-top:4px}
+.anel-num .resto b{color:var(--lima)}
+.barras{margin-top:14px;display:flex;flex-direction:column;gap:13px}
+.barra .topo-b{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:5px}
+.barra .topo-b .lab{font-weight:600}
+.barra .topo-b .num{font-family:var(--mono);color:rgba(255,255,255,.75)}
+.barra .trilho{height:9px;border-radius:99px;background:rgba(255,255,255,.13);overflow:hidden}
+.barra .fill{height:100%;border-radius:99px;background:var(--lima);width:0%;transition:width .45s ease, background .3s}
+.barra .fill.estourou{background:var(--papaia)}
+.barra .fill.ok{background:#7ED98F}
+.agua{margin-top:18px;border-top:1px dashed rgba(255,255,255,.22);padding-top:14px;display:flex;align-items:center;gap:10px;font-size:.85rem}
+.agua .gota{font-size:1.3rem}
+.agua b{font-family:var(--mono)}
+.sug{margin-top:16px;border-top:1px dashed rgba(255,255,255,.22);padding-top:14px}
+.sug h4{font-size:.86rem;font-weight:700;display:flex;gap:7px;align-items:center;margin-bottom:9px}
+.sug .falta{font-size:.8rem;color:rgba(255,255,255,.75);margin:9px 0 8px}
+.sug .falta b{color:var(--lima);font-family:var(--mono)}
+.sug-lista{display:flex;flex-direction:column;gap:7px}
+.sug-item{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:11px;padding:9px 11px;color:#fff;text-align:left;font-size:.8rem;transition:background .12s;width:100%}
+.sug-item:hover{background:rgba(255,255,255,.17)}
+.sug-item .mais{flex:none;width:22px;height:22px;border-radius:50%;background:var(--lima);color:var(--verde-escuro);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.95rem}
+.sug-item .det{font-family:var(--mono);font-size:.7rem;color:rgba(255,255,255,.65);display:block;margin-top:2px}
+.sug .nota-sug{font-size:.68rem;color:rgba(255,255,255,.5);margin-top:8px}
+.sug .fechado{font-size:.86rem;color:var(--lima);font-weight:600}
+.sug .excesso{font-size:.8rem;color:#FFB27D;line-height:1.55}
+.sug .excesso b{font-family:var(--mono)}
+.btn-troca{background:transparent;border:none;color:var(--ink-soft);font-size:1rem;padding:4px 7px;border-radius:8px}
+.btn-troca:hover{background:var(--verde-claro);color:var(--verde-escuro)}
+.al-card .eq{grid-row:1/3;align-self:center;text-align:right}
+.al-card .eq .g-eq{font-family:var(--mono);font-weight:600;font-size:.95rem;color:var(--verde-escuro);display:block}
+.al-card .eq .m-eq{font-family:var(--mono);font-size:.7rem;color:var(--ink-soft)}
+.painel-acoes{margin-top:18px;display:flex;flex-direction:column;gap:9px}
+.btn-lima{background:var(--lima);color:var(--verde-escuro)}
+.btn-lima:hover{background:#d6f56d}
+.btn-borda-clara{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.btn-borda-clara:hover{border-color:#fff}
+.nota-painel{font-size:.72rem;color:rgba(255,255,255,.55);margin-top:12px;line-height:1.45}
+
+/* ---------- Modal de alimentos ---------- */
+.modal-fundo{position:fixed;inset:0;background:rgba(11,29,19,.45);display:none;align-items:flex-end;justify-content:center;z-index:90;padding:0}
+.modal-fundo.aberto{display:flex}
+.modal{background:var(--card);width:100%;max-width:640px;max-height:86vh;border-radius:20px 20px 0 0;display:flex;flex-direction:column;overflow:hidden;animation:sobe .22s ease}
+@keyframes sobe{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+@media (min-width:700px){.modal-fundo{align-items:center;padding:24px}.modal{border-radius:20px}}
+.modal-cab{padding:18px 22px 12px;border-bottom:1px solid var(--linha)}
+.modal-cab .linha1{display:flex;align-items:center;gap:10px}
+.modal-cab h4{font-family:var(--display);font-weight:700;font-size:1.1rem;margin-right:auto}
+.modal-cab input.busca{width:100%;margin-top:12px;border:1.5px solid var(--linha);border-radius:10px;padding:11px 14px;font-size:.95rem}
+.modal-cab input.busca:focus{border-color:var(--verde);outline:none}
+.cats{display:flex;flex-wrap:wrap;gap:7px;padding:12px 0 4px}
+.cat{border:1.5px solid var(--linha);background:#fff;border-radius:999px;padding:6px 13px;font-size:.8rem;font-weight:600;color:var(--ink-soft)}
+.cat.ativa{background:var(--verde);border-color:var(--verde);color:#fff}
+
+/* ---------- Consulta rápida ---------- */
+#consulta{display:none;padding-bottom:80px}
+#consulta .c-hero{padding:34px 0 8px;max-width:680px}
+#consulta .c-hero .olho{font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--verde);margin-bottom:10px}
+#consulta h2{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4vw,2.3rem);letter-spacing:-.02em}
+#consulta .c-hero p{margin-top:10px;color:var(--ink-soft);max-width:560px}
+.consulta-tot{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:22px 0 18px}
+.stat{background:var(--verde-escuro);color:#fff;border-radius:14px;padding:16px 12px;text-align:center}
+.stat .v{font-family:var(--mono);font-size:1.25rem;font-weight:600;display:block;color:var(--lima)}
+.stat .l{font-size:.74rem;color:rgba(255,255,255,.75);display:block;margin-top:3px}
+.consulta-card{max-width:760px}
+@media (max-width:720px){.consulta-tot{grid-template-columns:repeat(2,1fr)}.consulta-tot .stat:last-child{grid-column:1/3}}
+.lista-alimentos{overflow-y:auto;padding:8px 10px 18px;flex:1}
+.al-card{width:100%;display:grid;grid-template-columns:1fr auto;gap:4px 12px;text-align:left;background:transparent;border:none;border-radius:12px;padding:12px;border-bottom:1px solid #F0F3EE}
+.al-card:hover{background:var(--verde-claro)}
+.al-card .n{font-weight:600;font-size:.95rem}
+.al-card .m{grid-column:1;font-size:.76rem;color:var(--ink-soft)}
+.al-card .k{grid-row:1/3;align-self:center;font-family:var(--mono);font-size:.8rem;color:var(--verde-escuro);text-align:right;line-height:1.45}
+.qtd-painel{padding:18px 22px;border-top:1px solid var(--linha);background:#FBFCF9;display:none}
+.qtd-painel.aberto{display:block}
+.qtd-painel .sel-nome{font-weight:700;margin-bottom:4px}
+.qtd-painel .sel-medida{font-size:.8rem;color:var(--ink-soft);margin-bottom:12px}
+.qtd-linha{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.qtd-linha input{width:110px;border:1.5px solid var(--linha);border-radius:10px;padding:10px;font-family:var(--mono);font-size:1rem;text-align:right}
+.qtd-linha input:focus{border-color:var(--verde);outline:none}
+.qtd-linha .un{font-size:.9rem;color:var(--ink-soft)}
+.porcoes{display:flex;gap:7px;margin:10px 0 14px;flex-wrap:wrap}
+.porcao{border:1.5px solid var(--linha);background:#fff;border-radius:999px;padding:5px 12px;font-size:.78rem;font-family:var(--mono)}
+.porcao:hover{border-color:var(--verde);background:var(--verde-claro)}
+.previa{font-family:var(--mono);font-size:.78rem;color:var(--ink-soft);margin-bottom:14px}
+.previa b{color:var(--ink)}
+
+/* ---------- Folha de impressão ---------- */
+#folha{display:none}
+
+@media print{
+  body{background:#fff}
+  .topo,#etapa1,#etapa2,.modal-fundo{display:none!important}
+  #folha{display:block;font-family:var(--body);color:#111;padding:0;font-size:12px}
+  #folha .f-cab{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #0B3B23;padding-bottom:10px;margin-bottom:14px}
+  #folha .f-logo{font-family:var(--display);font-weight:800;font-size:20px;color:#0B3B23}
+  #folha .f-data{font-family:var(--mono);font-size:11px;color:#555;text-align:right}
+  #folha h2{font-family:var(--display);font-size:15px;margin:14px 0 6px;color:#0B3B23}
+  #folha .f-perfil{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:11.5px;margin-bottom:4px}
+  #folha .f-perfil span b{font-family:var(--mono)}
+  #folha table{width:100%;border-collapse:collapse;margin-top:4px}
+  #folha th,#folha td{border:1px solid #C9D2C6;padding:5px 8px;text-align:left;font-size:11px}
+  #folha th{background:#E5F2E9;font-weight:700}
+  #folha td.num,#folha th.num{text-align:right;font-family:var(--mono)}
+  #folha .f-ref-nome{background:#0B3B23;color:#fff;font-weight:700;padding:5px 8px}
+  #folha .f-sub td{background:#F2F6F0;font-weight:700}
+  #folha .f-total td{background:#0B3B23;color:#fff;font-weight:700}
+  #folha .f-metas{margin-top:6px}
+  #folha .f-nota{margin-top:14px;font-size:10px;color:#666;border-top:1px solid #C9D2C6;padding-top:8px}
+  #folha .f-status-ok{color:#0B7A3E;font-weight:700}
+  #folha .f-status-falta{color:#B45309;font-weight:700}
+  #folha .f-status-acima{color:#C2410C;font-weight:700}
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr}
+  .painel{position:static}
+  .form-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .form-grid{grid-template-columns:1fr}
+  .objetivos{grid-template-columns:1fr}
+  .item{grid-template-columns:1fr 76px auto auto;grid-template-rows:auto auto}
+  .item .macros{grid-column:1/5;text-align:left;white-space:normal}
+  .topo .tag{display:none}
+}
+</style>
 </head>
-
 <body>
 
-  <header class="topo">
-    <div class="topo-in">
-      <span class="logo"><span class="folha" aria-hidden="true"></span>NutriPlano</span>
-      <span class="tag">Planejamento alimentar por objetivo</span>
-      <div class="topo-acoes">
-        <button class="btn btn-fant btn-mini" id="btn-editar-perfil" style="display:none">Editar dados</button>
-        <button class="btn btn-verde btn-mini" id="btn-imprimir-topo" style="display:none">Imprimir planilha</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- ================= ETAPA 1 ================= -->
-  <section id="etapa1" class="wrap">
-    <div class="hero">
-      <p class="olho">Etapa 1 de 2 · Seus dados e objetivo</p>
-      <h1>Monte sua dieta com as <em>metas certas</em> para o seu objetivo.</h1>
-      <p>Informe seus dados, escolha o objetivo e a plataforma calcula calorias, proteínas, gorduras, carboidratos,
-        fibras e água do seu dia. Depois, monte suas refeições alimento por alimento, acompanhando tudo em tempo real.
-      </p>
-    </div>
-
-    <div class="form-card">
-      <div class="form-grid">
-        <div class="campo">
-          <label for="in-nome">Nome <span class="dica">opcional — aparece na planilha impressa</span></label>
-          <input id="in-nome" type="text" placeholder="Seu nome" style="font-family:var(--body)">
-        </div>
-        <div class="campo">
-          <label for="in-peso">Peso atual (kg)</label>
-          <input id="in-peso" type="number" inputmode="decimal" min="30" max="300" step="0.1" placeholder="ex: 82">
-        </div>
-        <div class="campo">
-          <label for="in-altura">Altura (cm)</label>
-          <input id="in-altura" type="number" inputmode="numeric" min="100" max="230" step="1" placeholder="ex: 175">
-        </div>
-        <div class="campo">
-          <label for="in-idade">Idade <span class="dica">necessária no cálculo científico</span></label>
-          <input id="in-idade" type="number" inputmode="numeric" min="14" max="100" step="1" placeholder="ex: 28">
-        </div>
-        <div class="campo">
-          <label for="in-sexo">Sexo <span class="dica">necessário no cálculo científico</span></label>
-          <select id="in-sexo">
-            <option value="">Selecionar…</option>
-            <option value="M">Masculino</option>
-            <option value="F">Feminino</option>
-          </select>
-        </div>
-        <div class="campo">
-          <label for="in-atividade">Nível de atividade física</label>
-          <select id="in-atividade">
-            <option value="1.2">Sedentário — pouco ou nenhum exercício</option>
-            <option value="1.375">Leve — 1 a 3 treinos/semana</option>
-            <option value="1.55" selected>Moderado — 3 a 5 treinos/semana</option>
-            <option value="1.725">Intenso — 6 a 7 treinos/semana</option>
-          </select>
-        </div>
-      </div>
-
-      <h3 class="sec-titulo">Método de cálculo</h3>
-      <div class="metodo" id="metodo">
-        <button type="button" class="opc ativo" data-met="cientifico">
-          <span class="t">🔬 Estimativa científica (recomendado)</span>
-          <span class="d">Equação de Mifflin-St Jeor: usa sexo, idade, altura, peso e nível de atividade para estimar
-            seu gasto calórico diário, aplicando déficit ou superávit adequado ao objetivo.</span>
-        </button>
-        <button type="button" class="opc" data-met="rapido">
-          <span class="t">⚡ Fórmulas rápidas</span>
-          <span class="d">Regras práticas baseadas só no peso (peso × 20 / 30 / 35). Mais simples, porém menos precisas,
-            pois ignoram altura, idade, sexo e nível de atividade.</span>
-        </button>
-      </div>
-
-      <h3 class="sec-titulo">Qual é o seu objetivo?</h3>
-      <div class="objetivos" id="objetivos"></div>
-
-      <div class="campo" id="campo-meta">
-        <label for="in-meta">Peso que você quer alcançar (kg)</label>
-        <input id="in-meta" type="number" inputmode="decimal" min="30" max="300" step="0.1" placeholder="ex: 74">
-      </div>
-
-      <div class="form-acoes">
-        <button class="btn btn-verde" id="btn-calcular">Calcular minhas metas →</button>
-        <p class="aviso">As metas usam fórmulas práticas de estimativa e servem como ponto de partida. Para um plano
-          individualizado, consulte um(a) nutricionista.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= ETAPA 2 ================= -->
-  <section id="etapa2" class="wrap">
-    <div class="resumo-perfil" id="resumo-perfil"></div>
-
-    <div class="layout">
-      <div class="col-refeicoes">
-        <div id="refeicoes"></div>
-        <button class="btn btn-fant" id="btn-nova-ref">+ Adicionar refeição</button>
-      </div>
-
-      <aside class="painel" aria-label="Painel do dia">
-        <h3><span class="ponto" aria-hidden="true"></span>Painel do dia</h3>
-
-        <div class="anel-area">
-          <svg class="anel-svg" viewBox="0 0 120 120" aria-hidden="true">
-            <circle class="trilha" cx="60" cy="60" r="52" fill="none" stroke-width="11" />
-            <circle class="prog" id="anel-prog" cx="60" cy="60" r="52" fill="none" stroke-width="11"
-              stroke-linecap="round" transform="rotate(-90 60 60)" />
-          </svg>
-          <div class="anel-num">
-            <span class="grande"><span id="kcal-atual">0</span> kcal</span>
-            <span class="resto">meta: <b id="kcal-meta">—</b> kcal</span>
-            <span class="resto" id="kcal-restante">restam — kcal</span>
-          </div>
-        </div>
-
-        <div class="barras" id="barras"></div>
-
-        <div class="agua">
-          <span class="gota" aria-hidden="true">💧</span>
-          <span>Beba <b id="agua-meta">—</b> de água ao longo do dia.</span>
-        </div>
-
-        <div class="sug" id="sugestoes"></div>
-
-        <div class="painel-acoes">
-          <button class="btn btn-lima" id="btn-imprimir">🖨 Imprimir planilha alimentar</button>
-          <button class="btn btn-borda-clara btn-mini" id="btn-limpar">Limpar dieta</button>
-        </div>
-        <p class="nota-painel">Valores nutricionais por 100 g de alimento pronto para consumo (base: Tabela TACO e
-          rótulos médios). Estimativas educativas — não substituem acompanhamento profissional.</p>
-      </aside>
-    </div>
-  </section>
-
-  <!-- ================= MODAL ALIMENTOS ================= -->
-  <div class="modal-fundo" id="modal-fundo" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
-    <div class="modal">
-      <div class="modal-cab">
-        <div class="linha1">
-          <h4 id="modal-titulo">Adicionar alimento</h4>
-          <button class="btn-x" id="modal-fechar" aria-label="Fechar">✕</button>
-        </div>
-        <input class="busca" id="busca" type="search" placeholder="Buscar alimento… (ex: arroz, frango, batata)">
-        <div class="cats" id="cats"></div>
-      </div>
-      <div class="lista-alimentos" id="lista-alimentos"></div>
-      <div class="qtd-painel" id="qtd-painel">
-        <p class="sel-nome" id="sel-nome"></p>
-        <p class="sel-medida" id="sel-medida"></p>
-        <div class="porcoes" id="porcoes"></div>
-        <div class="qtd-linha">
-          <input id="in-qtd" type="number" inputmode="decimal" min="1" max="2000" step="1" value="100">
-          <span class="un">gramas</span>
-        </div>
-        <p class="previa" id="previa"></p>
-        <button class="btn btn-verde" id="btn-confirma-add">Adicionar à refeição</button>
-      </div>
+<header class="topo">
+  <div class="topo-in">
+    <span class="logo"><span class="folha" aria-hidden="true"></span>NutriPlano</span>
+    <span class="tag">Planejamento alimentar por objetivo</span>
+    <div class="topo-acoes">
+      <button class="btn btn-fant btn-mini" id="btn-consulta">🔍 Consulta rápida</button>
+      <button class="btn btn-fant btn-mini" id="btn-editar-perfil" style="display:none">Editar dados</button>
+      <button class="btn btn-verde btn-mini" id="btn-imprimir-topo" style="display:none">Imprimir planilha</button>
     </div>
   </div>
+</header>
 
-  <!-- ================= FOLHA DE IMPRESSÃO ================= -->
-  <div id="folha"></div>
+<!-- ================= ETAPA 1 ================= -->
+<section id="etapa1" class="wrap">
+  <div class="hero">
+    <p class="olho">Etapa 1 de 2 · Seus dados e objetivo</p>
+    <h1>Monte sua dieta com as <em>metas certas</em> para o seu objetivo.</h1>
+    <p>Informe seus dados, escolha o objetivo e a plataforma calcula calorias, proteínas, gorduras, carboidratos, fibras e água do seu dia. Depois, monte suas refeições alimento por alimento, acompanhando tudo em tempo real.</p>
+  </div>
 
-  <script>
-    /* =================== DADOS =================== */
-    /* Valores por 100 g do alimento pronto (base: Tabela TACO / rótulos médios) */
-    const ALIMENTOS = [
-      // Carboidratos
-      { id: "arroz-branco", nome: "Arroz branco cozido", cat: "Carboidratos", kcal: 128, p: 2.5, c: 28.1, g: 0.2, fib: 1.6, medida: "1 colher de servir ≈ 30 g", porcoes: [60, 90, 120] },
-      { id: "arroz-integral", nome: "Arroz integral cozido", cat: "Carboidratos", kcal: 124, p: 2.6, c: 25.8, g: 1.0, fib: 2.7, medida: "1 colher de servir ≈ 30 g", porcoes: [60, 90, 120] },
-      { id: "batata-doce", nome: "Batata-doce cozida", cat: "Carboidratos", kcal: 77, p: 0.6, c: 18.4, g: 0.1, fib: 2.2, medida: "1 unidade média ≈ 150 g", porcoes: [100, 150, 200] },
-      { id: "batata-inglesa", nome: "Batata inglesa cozida", cat: "Carboidratos", kcal: 52, p: 1.2, c: 11.9, g: 0.0, fib: 1.3, medida: "1 unidade média ≈ 140 g", porcoes: [100, 140, 200] },
-      { id: "mandioca", nome: "Mandioca (aipim) cozida", cat: "Carboidratos", kcal: 125, p: 0.6, c: 30.1, g: 0.3, fib: 1.6, medida: "1 pedaço médio ≈ 100 g", porcoes: [100, 150, 200] },
-      { id: "macarrao", nome: "Macarrão cozido", cat: "Carboidratos", kcal: 138, p: 4.5, c: 28.0, g: 0.6, fib: 1.5, medida: "1 pegador ≈ 110 g", porcoes: [110, 160, 220] },
-      { id: "aveia", nome: "Aveia em flocos", cat: "Carboidratos", kcal: 394, p: 13.9, c: 66.6, g: 8.5, fib: 9.1, medida: "1 colher de sopa ≈ 15 g", porcoes: [30, 45, 60] },
-      { id: "pao-frances", nome: "Pão francês", cat: "Carboidratos", kcal: 300, p: 8.0, c: 58.6, g: 3.1, fib: 2.3, medida: "1 unidade ≈ 50 g", porcoes: [50, 100] },
-      { id: "pao-integral", nome: "Pão de forma integral", cat: "Carboidratos", kcal: 253, p: 9.4, c: 49.9, g: 3.5, fib: 6.9, medida: "1 fatia ≈ 25 g", porcoes: [25, 50, 75] },
-      { id: "tapioca", nome: "Tapioca (goma hidratada)", cat: "Carboidratos", kcal: 240, p: 0.0, c: 60.0, g: 0.0, fib: 0.4, medida: "1 tapioca média ≈ 60 g de goma", porcoes: [40, 60, 80] },
-      { id: "cuscuz", nome: "Cuscuz de milho cozido", cat: "Carboidratos", kcal: 113, p: 2.2, c: 25.3, g: 0.7, fib: 2.1, medida: "1 fatia média ≈ 120 g", porcoes: [100, 150, 200] },
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="campo">
+        <label for="in-nome">Nome <span class="dica">opcional — aparece na planilha impressa</span></label>
+        <input id="in-nome" type="text" placeholder="Seu nome" style="font-family:var(--body)">
+      </div>
+      <div class="campo">
+        <label for="in-peso">Peso atual (kg)</label>
+        <input id="in-peso" type="number" inputmode="decimal" min="30" max="300" step="0.1" placeholder="ex: 82">
+      </div>
+      <div class="campo">
+        <label for="in-altura">Altura (cm)</label>
+        <input id="in-altura" type="number" inputmode="numeric" min="100" max="230" step="1" placeholder="ex: 175">
+      </div>
+      <div class="campo">
+        <label for="in-idade">Idade <span class="dica">necessária no cálculo científico</span></label>
+        <input id="in-idade" type="number" inputmode="numeric" min="14" max="100" step="1" placeholder="ex: 28">
+      </div>
+      <div class="campo">
+        <label for="in-sexo">Sexo <span class="dica">necessário no cálculo científico</span></label>
+        <select id="in-sexo">
+          <option value="">Selecionar…</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="in-atividade">Nível de atividade física</label>
+        <select id="in-atividade">
+          <option value="1.2">Sedentário — pouco ou nenhum exercício</option>
+          <option value="1.375">Leve — 1 a 3 treinos/semana</option>
+          <option value="1.55" selected>Moderado — 3 a 5 treinos/semana</option>
+          <option value="1.725">Intenso — 6 a 7 treinos/semana</option>
+        </select>
+      </div>
+    </div>
 
-      // Proteínas
-      { id: "frango-peito", nome: "Peito de frango grelhado", cat: "Proteínas", kcal: 159, p: 32.0, c: 0.0, g: 2.5, fib: 0, medida: "1 filé médio ≈ 120 g", porcoes: [100, 150, 200] },
-      { id: "frango-sobrecoxa", nome: "Sobrecoxa de frango assada (sem pele)", cat: "Proteínas", kcal: 233, p: 28.0, c: 0.0, g: 13.0, fib: 0, medida: "1 unidade ≈ 100 g", porcoes: [100, 150] },
-      { id: "patinho", nome: "Carne bovina magra grelhada (patinho)", cat: "Proteínas", kcal: 219, p: 35.9, c: 0.0, g: 7.3, fib: 0, medida: "1 bife médio ≈ 120 g", porcoes: [100, 150, 200] },
-      { id: "carne-moida", nome: "Carne moída refogada (acém)", cat: "Proteínas", kcal: 212, p: 26.7, c: 0.0, g: 11.0, fib: 0, medida: "3 colheres de sopa ≈ 90 g", porcoes: [90, 120, 150] },
-      { id: "tilapia", nome: "Tilápia grelhada", cat: "Proteínas", kcal: 128, p: 26.0, c: 0.0, g: 2.5, fib: 0, medida: "1 filé médio ≈ 120 g", porcoes: [120, 180] },
-      { id: "salmao", nome: "Salmão grelhado", cat: "Proteínas", kcal: 230, p: 26.1, c: 0.0, g: 14.0, fib: 0, medida: "1 posta média ≈ 130 g", porcoes: [100, 130, 180] },
-      { id: "atum-lata", nome: "Atum em lata (em água)", cat: "Proteínas", kcal: 109, p: 26.0, c: 0.0, g: 1.0, fib: 0, medida: "1 lata drenada ≈ 120 g", porcoes: [60, 120] },
-      { id: "ovo", nome: "Ovo de galinha cozido", cat: "Proteínas", kcal: 146, p: 13.3, c: 0.6, g: 9.5, fib: 0, medida: "1 unidade ≈ 50 g", porcoes: [50, 100, 150] },
-      { id: "whey", nome: "Whey protein (pó)", cat: "Proteínas", kcal: 400, p: 80.0, c: 8.0, g: 6.0, fib: 0, medida: "1 dose (scoop) ≈ 30 g", porcoes: [30, 60] },
-      { id: "carne-porco-lombo", nome: "Lombo de porco assado", cat: "Proteínas", kcal: 210, p: 32.1, c: 0.0, g: 8.2, fib: 0, medida: "1 fatia média ≈ 100 g", porcoes: [100, 150] },
+    <h3 class="sec-titulo">Método de cálculo</h3>
+    <div class="metodo" id="metodo">
+      <button type="button" class="opc ativo" data-met="cientifico">
+        <span class="t">🔬 Estimativa científica (recomendado)</span>
+        <span class="d">Equação de Mifflin-St Jeor: usa sexo, idade, altura, peso e nível de atividade para estimar seu gasto calórico diário, aplicando déficit ou superávit adequado ao objetivo.</span>
+      </button>
+      <button type="button" class="opc" data-met="rapido">
+        <span class="t">⚡ Fórmulas rápidas</span>
+        <span class="d">Regras práticas baseadas só no peso (peso × 20 / 30 / 35). Mais simples, porém menos precisas, pois ignoram altura, idade, sexo e nível de atividade.</span>
+      </button>
+    </div>
 
-      // Leguminosas
-      { id: "feijao-carioca", nome: "Feijão carioca cozido", cat: "Leguminosas", kcal: 76, p: 4.8, c: 13.6, g: 0.5, fib: 8.5, medida: "1 concha média ≈ 85 g", porcoes: [85, 140, 170] },
-      { id: "feijao-preto", nome: "Feijão preto cozido", cat: "Leguminosas", kcal: 77, p: 4.5, c: 14.0, g: 0.5, fib: 8.4, medida: "1 concha média ≈ 85 g", porcoes: [85, 140, 170] },
-      { id: "lentilha", nome: "Lentilha cozida", cat: "Leguminosas", kcal: 93, p: 6.3, c: 16.3, g: 0.5, fib: 7.9, medida: "1 concha média ≈ 85 g", porcoes: [85, 140] },
-      { id: "grao-bico", nome: "Grão-de-bico cozido", cat: "Leguminosas", kcal: 130, p: 8.9, c: 21.2, g: 2.1, fib: 7.6, medida: "3 colheres de sopa ≈ 75 g", porcoes: [75, 120, 150] },
+    <h3 class="sec-titulo">Preferência alimentar</h3>
+    <div class="metodo" id="pref-alimentar">
+      <button type="button" class="opc ativo" data-pref="todos">
+        <span class="t">🍽 Sem restrição</span>
+        <span class="d">Todos os alimentos do banco ficam disponíveis para montar a dieta.</span>
+      </button>
+      <button type="button" class="opc" data-pref="veg">
+        <span class="t">🌱 Vegetariano (ovolactovegetariano)</span>
+        <span class="d">Oculta carnes, aves e peixes da montagem da dieta. Mantém ovos e laticínios, e destaca proteínas vegetais como tofu, soja texturizada e leguminosas.</span>
+      </button>
+    </div>
 
-      // Frutas
-      { id: "banana", nome: "Banana prata", cat: "Frutas", kcal: 98, p: 1.3, c: 26.0, g: 0.1, fib: 2.0, medida: "1 unidade ≈ 70 g", porcoes: [70, 140] },
-      { id: "maca", nome: "Maçã com casca", cat: "Frutas", kcal: 56, p: 0.3, c: 15.2, g: 0.0, fib: 1.3, medida: "1 unidade ≈ 130 g", porcoes: [130, 260] },
-      { id: "laranja", nome: "Laranja pera", cat: "Frutas", kcal: 45, p: 1.0, c: 11.5, g: 0.1, fib: 1.1, medida: "1 unidade ≈ 140 g", porcoes: [140, 280] },
-      { id: "mamao", nome: "Mamão papaia", cat: "Frutas", kcal: 40, p: 0.5, c: 10.4, g: 0.1, fib: 1.8, medida: "1/2 unidade ≈ 150 g", porcoes: [150, 300] },
-      { id: "abacate", nome: "Abacate", cat: "Frutas", kcal: 96, p: 1.2, c: 6.0, g: 8.4, fib: 6.3, medida: "2 colheres de sopa ≈ 60 g", porcoes: [60, 100] },
-      { id: "morango", nome: "Morango", cat: "Frutas", kcal: 30, p: 0.9, c: 6.8, g: 0.3, fib: 1.7, medida: "1 xícara ≈ 140 g", porcoes: [100, 140] },
-      { id: "manga", nome: "Manga palmer", cat: "Frutas", kcal: 72, p: 0.4, c: 19.4, g: 0.2, fib: 1.6, medida: "1 fatia grossa ≈ 100 g", porcoes: [100, 150] },
+    <h3 class="sec-titulo">Qual é o seu objetivo?</h3>
+    <div class="objetivos" id="objetivos"></div>
 
-      // Vegetais
-      { id: "brocolis", nome: "Brócolis cozido", cat: "Vegetais", kcal: 25, p: 2.1, c: 4.4, g: 0.5, fib: 3.4, medida: "3 colheres de sopa ≈ 60 g", porcoes: [60, 100, 150] },
-      { id: "alface", nome: "Alface crespa", cat: "Vegetais", kcal: 11, p: 1.3, c: 1.7, g: 0.2, fib: 1.7, medida: "1 prato de folhas ≈ 40 g", porcoes: [40, 80] },
-      { id: "tomate", nome: "Tomate", cat: "Vegetais", kcal: 15, p: 1.1, c: 3.1, g: 0.2, fib: 1.2, medida: "1 unidade média ≈ 110 g", porcoes: [110, 160] },
-      { id: "cenoura", nome: "Cenoura crua", cat: "Vegetais", kcal: 34, p: 1.3, c: 7.7, g: 0.2, fib: 3.2, medida: "1 unidade média ≈ 100 g", porcoes: [60, 100] },
-      { id: "couve", nome: "Couve-manteiga refogada", cat: "Vegetais", kcal: 90, p: 3.1, c: 8.7, g: 5.4, fib: 5.7, medida: "2 colheres de sopa ≈ 50 g", porcoes: [50, 100] },
-      { id: "abobrinha", nome: "Abobrinha refogada", cat: "Vegetais", kcal: 25, p: 1.1, c: 4.3, g: 0.6, fib: 1.6, medida: "3 colheres de sopa ≈ 70 g", porcoes: [70, 120] },
-      { id: "pepino", nome: "Pepino", cat: "Vegetais", kcal: 10, p: 0.9, c: 2.0, g: 0.0, fib: 1.1, medida: "1/2 unidade ≈ 100 g", porcoes: [100, 150] },
+    <div class="campo" id="campo-meta">
+      <label for="in-meta">Peso que você quer alcançar (kg)</label>
+      <input id="in-meta" type="number" inputmode="decimal" min="30" max="300" step="0.1" placeholder="ex: 74">
+    </div>
 
-      // Laticínios
-      { id: "leite-integral", nome: "Leite integral", cat: "Laticínios", kcal: 61, p: 3.2, c: 4.6, g: 3.3, fib: 0, medida: "1 copo ≈ 200 ml (200 g)", porcoes: [200, 300] },
-      { id: "leite-desnatado", nome: "Leite desnatado", cat: "Laticínios", kcal: 36, p: 3.4, c: 4.9, g: 0.2, fib: 0, medida: "1 copo ≈ 200 ml (200 g)", porcoes: [200, 300] },
-      { id: "iogurte-natural", nome: "Iogurte natural integral", cat: "Laticínios", kcal: 51, p: 4.1, c: 1.9, g: 3.0, fib: 0, medida: "1 pote ≈ 170 g", porcoes: [170, 340] },
-      { id: "iogurte-desnatado", nome: "Iogurte natural desnatado", cat: "Laticínios", kcal: 41, p: 4.3, c: 5.8, g: 0.2, fib: 0, medida: "1 pote ≈ 170 g", porcoes: [170, 340] },
-      { id: "queijo-minas", nome: "Queijo minas frescal", cat: "Laticínios", kcal: 264, p: 17.4, c: 3.2, g: 20.2, fib: 0, medida: "1 fatia média ≈ 30 g", porcoes: [30, 60] },
-      { id: "mucarela", nome: "Queijo muçarela", cat: "Laticínios", kcal: 330, p: 22.6, c: 3.0, g: 25.2, fib: 0, medida: "1 fatia ≈ 20 g", porcoes: [20, 40, 60] },
-      { id: "requeijao", nome: "Requeijão cremoso", cat: "Laticínios", kcal: 257, p: 9.6, c: 2.4, g: 23.4, fib: 0, medida: "1 colher de sopa ≈ 30 g", porcoes: [15, 30] },
+    <div class="form-acoes">
+      <button class="btn btn-verde" id="btn-calcular">Calcular minhas metas →</button>
+      <p class="aviso">As metas usam fórmulas práticas de estimativa e servem como ponto de partida. Para um plano individualizado, consulte um(a) nutricionista.</p>
+    </div>
+  </div>
+</section>
 
-      // Gorduras & sementes
-      { id: "azeite", nome: "Azeite de oliva", cat: "Gorduras e sementes", kcal: 884, p: 0.0, c: 0.0, g: 100.0, fib: 0, medida: "1 colher de sopa ≈ 13 g", porcoes: [5, 13, 26] },
-      { id: "manteiga", nome: "Manteiga", cat: "Gorduras e sementes", kcal: 726, p: 0.4, c: 0.1, g: 82.0, fib: 0, medida: "1 colher de chá ≈ 8 g", porcoes: [8, 16] },
-      { id: "amendoim", nome: "Amendoim torrado", cat: "Gorduras e sementes", kcal: 606, p: 22.5, c: 18.7, g: 49.6, fib: 7.8, medida: "1 punhado ≈ 30 g", porcoes: [15, 30] },
-      { id: "pasta-amendoim", nome: "Pasta de amendoim integral", cat: "Gorduras e sementes", kcal: 590, p: 25.0, c: 20.0, g: 47.0, fib: 6.0, medida: "1 colher de sopa ≈ 15 g", porcoes: [15, 30] },
-      { id: "castanha-caju", nome: "Castanha-de-caju torrada", cat: "Gorduras e sementes", kcal: 570, p: 18.5, c: 29.1, g: 46.3, fib: 3.7, medida: "1 punhado ≈ 30 g", porcoes: [15, 30] },
-      { id: "castanha-para", nome: "Castanha-do-pará", cat: "Gorduras e sementes", kcal: 643, p: 14.5, c: 15.1, g: 63.5, fib: 7.9, medida: "2 unidades ≈ 10 g", porcoes: [10, 20] },
-      { id: "chia", nome: "Semente de chia", cat: "Gorduras e sementes", kcal: 486, p: 16.5, c: 42.1, g: 30.7, fib: 34.4, medida: "1 colher de sopa ≈ 12 g", porcoes: [12, 24] },
-    ];
+<!-- ================= ETAPA 2 ================= -->
+<section id="etapa2" class="wrap">
+  <div class="resumo-perfil" id="resumo-perfil"></div>
 
-    const CATEGORIAS = ["Todos", "Carboidratos", "Proteínas", "Leguminosas", "Frutas", "Vegetais", "Laticínios", "Gorduras e sementes"];
+  <div class="layout">
+    <div class="col-refeicoes">
+      <div id="refeicoes"></div>
+      <button class="btn btn-fant" id="btn-nova-ref">+ Adicionar refeição</button>
+    </div>
 
-    const OBJETIVOS = [
-      { id: "secar-rapido", ic: "🔥", nome: "Secar o mais rápido possível", desc: "Déficit agressivo de calorias para perda de peso acelerada.", formula: "rápido: peso × 20 · científico: gasto diário − 25%", mult: 20, usaMeta: true },
-      { id: "secar-massa", ic: "🛡️", nome: "Secar preservando massa muscular", desc: "Déficit calórico moderado com proteína alta calculada pelo peso que você quer alcançar.", formula: "rápido: peso × 20 · científico: gasto − 20% · proteína pelo peso desejado", mult: 20, usaMeta: true },
-      { id: "manter", ic: "⚖️", nome: "Manter o peso", desc: "Equilíbrio para sustentar o peso atual com boa energia.", formula: "rápido: peso × 30 · científico: gasto diário estimado", mult: 30, usaMeta: false },
-      { id: "ganhar-massa", ic: "💪", nome: "Ganhar massa muscular", desc: "Superávit calórico controlado para hipertrofia com treino de força.", formula: "rápido: peso × 35 · científico: gasto + 12%", mult: 35, usaMeta: false },
-      { id: "ganhar-peso", ic: "📈", nome: "Ganhar peso", desc: "Superávit calórico para quem precisa aumentar o peso corporal.", formula: "rápido: peso × 35 · científico: gasto + 15%", mult: 35, usaMeta: false },
-    ];
+    <aside class="painel" aria-label="Painel do dia">
+      <h3><span class="ponto" aria-hidden="true"></span>Painel do dia</h3>
 
-    /* =================== ESTADO =================== */
-    let perfil = null;     // {nome, peso, altura, idade, meta, objetivoId}
-    let metas = null;     // {kcal, prot, gord, carb, fib, aguaMl}
-    let refeicoes = [];    // [{nome, itens:[{foodId, gramas}]}]
-    let objetivoSel = null;
-    let refDestino = null; // índice da refeição que está adicionando alimento
-    let alimentoSel = null;
-    let catAtiva = "Todos";
-    let metodoSel = "cientifico";
-    let modoTroca = null;  // {ri, ii} quando o modal está em modo de substituição
+      <div class="anel-area">
+        <svg class="anel-svg" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="trilha" cx="60" cy="60" r="52" fill="none" stroke-width="11"/>
+          <circle class="prog" id="anel-prog" cx="60" cy="60" r="52" fill="none" stroke-width="11"
+                  stroke-linecap="round" transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="anel-num">
+          <span class="grande"><span id="kcal-atual">0</span> kcal</span>
+          <span class="resto">meta: <b id="kcal-meta">—</b> kcal</span>
+          <span class="resto" id="kcal-restante">restam — kcal</span>
+        </div>
+      </div>
 
-    const REFS_PADRAO = ["Café da manhã", "Lanche da manhã", "Almoço", "Lanche da tarde", "Jantar", "Ceia"];
+      <div class="barras" id="barras"></div>
 
-    /* =================== HELPERS =================== */
-    const $ = s => document.querySelector(s);
-    const fmt = (n, dec = 0) => n.toLocaleString("pt-BR", { minimumFractionDigits: dec, maximumFractionDigits: dec });
-    const alimento = id => ALIMENTOS.find(a => a.id === id);
-    function nutri(it) {
-      const a = alimento(it.foodId), f = it.gramas / 100;
-      return { kcal: a.kcal * f, p: a.p * f, c: a.c * f, g: a.g * f, fib: a.fib * f };
-    }
-    function totalRef(r) {
-      return r.itens.reduce((t, it) => { const n = nutri(it); t.kcal += n.kcal; t.p += n.p; t.c += n.c; t.g += n.g; t.fib += n.fib; return t; }, { kcal: 0, p: 0, c: 0, g: 0, fib: 0 });
-    }
-    function totalDia() {
-      return refeicoes.reduce((t, r) => { const n = totalRef(r); t.kcal += n.kcal; t.p += n.p; t.c += n.c; t.g += n.g; t.fib += n.fib; return t; }, { kcal: 0, p: 0, c: 0, g: 0, fib: 0 });
-    }
+      <div class="agua">
+        <span class="gota" aria-hidden="true">💧</span>
+        <span>Beba <b id="agua-meta">—</b> de água ao longo do dia.</span>
+      </div>
 
-    /* =================== ETAPA 1 =================== */
-    function montaObjetivos() {
-      const box = $("#objetivos");
-      box.innerHTML = "";
-      OBJETIVOS.forEach(o => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "obj";
-        b.dataset.id = o.id;
-        b.innerHTML = `<span class="nome"><span class="ic">${o.ic}</span>${o.nome}</span>
+      <div class="sug" id="sugestoes"></div>
+
+      <div class="painel-acoes">
+        <button class="btn btn-lima" id="btn-imprimir">🖨 Imprimir planilha alimentar</button>
+        <button class="btn btn-borda-clara btn-mini" id="btn-limpar">Limpar dieta</button>
+      </div>
+      <p class="nota-painel">Valores nutricionais por 100 g de alimento pronto para consumo (base: Tabela TACO e rótulos médios). Estimativas educativas — não substituem acompanhamento profissional.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= CONSULTA RÁPIDA ================= -->
+<section id="consulta" class="wrap">
+  <div class="c-hero">
+    <p class="olho">Consulta rápida · sem metas</p>
+    <h2>Quanto tem no que você vai comer?</h2>
+    <p>Para os dias em que seguir a dieta não dá: busque os alimentos, defina as quantidades e veja o total calórico e nutricional na hora — sem precisar preencher seus dados.</p>
+  </div>
+
+  <div class="consulta-tot" id="consulta-tot"></div>
+
+  <div class="refeicao consulta-card">
+    <div class="ref-cab">
+      <span style="font-family:var(--display);font-weight:700;font-size:1.08rem;flex:1">Alimentos consultados</span>
+      <button class="btn-x" id="btn-consulta-limpar" title="Limpar lista" aria-label="Limpar lista de consulta">🗑</button>
+    </div>
+    <ul class="itens" id="consulta-itens"></ul>
+    <div class="ref-pe"><button class="btn-add-alimento" id="btn-consulta-add">+ Adicionar alimento</button></div>
+  </div>
+</section>
+
+<!-- ================= MODAL ALIMENTOS ================= -->
+<div class="modal-fundo" id="modal-fundo" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+  <div class="modal">
+    <div class="modal-cab">
+      <div class="linha1">
+        <h4 id="modal-titulo">Adicionar alimento</h4>
+        <button class="btn-x" id="modal-fechar" aria-label="Fechar">✕</button>
+      </div>
+      <input class="busca" id="busca" type="search" placeholder="Buscar alimento… (ex: arroz, frango, batata)">
+      <div class="cats" id="cats"></div>
+    </div>
+    <div class="lista-alimentos" id="lista-alimentos"></div>
+    <div class="qtd-painel" id="qtd-painel">
+      <p class="sel-nome" id="sel-nome"></p>
+      <p class="sel-medida" id="sel-medida"></p>
+      <div class="porcoes" id="porcoes"></div>
+      <div class="qtd-linha">
+        <input id="in-qtd" type="number" inputmode="decimal" min="1" max="2000" step="1" value="100">
+        <span class="un">gramas</span>
+      </div>
+      <p class="previa" id="previa"></p>
+      <button class="btn btn-verde" id="btn-confirma-add">Adicionar à refeição</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FOLHA DE IMPRESSÃO ================= -->
+<div id="folha"></div>
+
+<script>
+/* =================== DADOS =================== */
+/* Valores por 100 g do alimento pronto (base: Tabela TACO / rótulos médios) */
+const ALIMENTOS = [
+ // Carboidratos
+ {id:"arroz-branco", nome:"Arroz branco cozido", cat:"Carboidratos", kcal:128, p:2.5, c:28.1, g:0.2, fib:1.6, medida:"1 colher de servir ≈ 30 g", porcoes:[60,90,120]},
+ {id:"arroz-integral", nome:"Arroz integral cozido", cat:"Carboidratos", kcal:124, p:2.6, c:25.8, g:1.0, fib:2.7, medida:"1 colher de servir ≈ 30 g", porcoes:[60,90,120]},
+ {id:"batata-doce", nome:"Batata-doce cozida", cat:"Carboidratos", kcal:77, p:0.6, c:18.4, g:0.1, fib:2.2, medida:"1 unidade média ≈ 150 g", porcoes:[100,150,200]},
+ {id:"batata-inglesa", nome:"Batata inglesa cozida", cat:"Carboidratos", kcal:52, p:1.2, c:11.9, g:0.0, fib:1.3, medida:"1 unidade média ≈ 140 g", porcoes:[100,140,200]},
+ {id:"mandioca", nome:"Mandioca (aipim) cozida", cat:"Carboidratos", kcal:125, p:0.6, c:30.1, g:0.3, fib:1.6, medida:"1 pedaço médio ≈ 100 g", porcoes:[100,150,200]},
+ {id:"macarrao", nome:"Macarrão cozido", cat:"Carboidratos", kcal:138, p:4.5, c:28.0, g:0.6, fib:1.5, medida:"1 pegador ≈ 110 g", porcoes:[110,160,220]},
+ {id:"aveia", nome:"Aveia em flocos", cat:"Carboidratos", kcal:394, p:13.9, c:66.6, g:8.5, fib:9.1, medida:"1 colher de sopa ≈ 15 g", porcoes:[30,45,60]},
+ {id:"pao-frances", nome:"Pão francês", cat:"Carboidratos", kcal:300, p:8.0, c:58.6, g:3.1, fib:2.3, medida:"1 unidade ≈ 50 g", porcoes:[50,100]},
+ {id:"pao-integral", nome:"Pão de forma integral", cat:"Carboidratos", kcal:253, p:9.4, c:49.9, g:3.5, fib:6.9, medida:"1 fatia ≈ 25 g", porcoes:[25,50,75]},
+ {id:"tapioca", nome:"Tapioca (goma hidratada)", cat:"Carboidratos", kcal:240, p:0.0, c:60.0, g:0.0, fib:0.4, medida:"1 tapioca média ≈ 60 g de goma", porcoes:[40,60,80]},
+ {id:"cuscuz", nome:"Cuscuz de milho cozido", cat:"Carboidratos", kcal:113, p:2.2, c:25.3, g:0.7, fib:2.1, medida:"1 fatia média ≈ 120 g", porcoes:[100,150,200]},
+
+ // Proteínas
+ {id:"frango-peito", nome:"Peito de frango grelhado", cat:"Proteínas", kcal:159, p:32.0, c:0.0, g:2.5, fib:0, medida:"1 filé médio ≈ 120 g", porcoes:[100,150,200], veg:false},
+ {id:"frango-sobrecoxa", nome:"Sobrecoxa de frango assada (sem pele)", cat:"Proteínas", kcal:233, p:28.0, c:0.0, g:13.0, fib:0, medida:"1 unidade ≈ 100 g", porcoes:[100,150], veg:false},
+ {id:"patinho", nome:"Carne bovina magra grelhada (patinho)", cat:"Proteínas", kcal:219, p:35.9, c:0.0, g:7.3, fib:0, medida:"1 bife médio ≈ 120 g", porcoes:[100,150,200], veg:false},
+ {id:"carne-moida", nome:"Carne moída refogada (acém)", cat:"Proteínas", kcal:212, p:26.7, c:0.0, g:11.0, fib:0, medida:"3 colheres de sopa ≈ 90 g", porcoes:[90,120,150], veg:false},
+ {id:"tilapia", nome:"Tilápia grelhada", cat:"Proteínas", kcal:128, p:26.0, c:0.0, g:2.5, fib:0, medida:"1 filé médio ≈ 120 g", porcoes:[120,180], veg:false},
+ {id:"salmao", nome:"Salmão grelhado", cat:"Proteínas", kcal:230, p:26.1, c:0.0, g:14.0, fib:0, medida:"1 posta média ≈ 130 g", porcoes:[100,130,180], veg:false},
+ {id:"atum-lata", nome:"Atum em lata (em água)", cat:"Proteínas", kcal:109, p:26.0, c:0.0, g:1.0, fib:0, medida:"1 lata drenada ≈ 120 g", porcoes:[60,120], veg:false},
+ {id:"ovo", nome:"Ovo de galinha cozido", cat:"Proteínas", kcal:146, p:13.3, c:0.6, g:9.5, fib:0, medida:"1 unidade ≈ 50 g", porcoes:[50,100,150]},
+ {id:"whey", nome:"Whey protein (pó)", cat:"Proteínas", kcal:400, p:80.0, c:8.0, g:6.0, fib:0, medida:"1 dose (scoop) ≈ 30 g", porcoes:[30,60]},
+ {id:"carne-porco-lombo", nome:"Lombo de porco assado", cat:"Proteínas", kcal:210, p:32.1, c:0.0, g:8.2, fib:0, medida:"1 fatia média ≈ 100 g", porcoes:[100,150], veg:false},
+ {id:"tofu", nome:"Tofu firme", cat:"Proteínas", kcal:76, p:8.0, c:1.9, g:4.8, fib:0.3, medida:"1 fatia média ≈ 100 g", porcoes:[100,150,200]},
+ {id:"pts-soja", nome:"Proteína texturizada de soja (seca)", cat:"Proteínas", kcal:336, p:51.0, c:32.0, g:1.2, fib:17.5, medida:"3 colheres de sopa ≈ 30 g (peso seco)", porcoes:[30,50,80]},
+
+ // Leguminosas
+ {id:"feijao-carioca", nome:"Feijão carioca cozido", cat:"Leguminosas", kcal:76, p:4.8, c:13.6, g:0.5, fib:8.5, medida:"1 concha média ≈ 85 g", porcoes:[85,140,170]},
+ {id:"feijao-preto", nome:"Feijão preto cozido", cat:"Leguminosas", kcal:77, p:4.5, c:14.0, g:0.5, fib:8.4, medida:"1 concha média ≈ 85 g", porcoes:[85,140,170]},
+ {id:"lentilha", nome:"Lentilha cozida", cat:"Leguminosas", kcal:93, p:6.3, c:16.3, g:0.5, fib:7.9, medida:"1 concha média ≈ 85 g", porcoes:[85,140]},
+ {id:"grao-bico", nome:"Grão-de-bico cozido", cat:"Leguminosas", kcal:130, p:8.9, c:21.2, g:2.1, fib:7.6, medida:"3 colheres de sopa ≈ 75 g", porcoes:[75,120,150]},
+ {id:"soja-cozida", nome:"Soja em grãos cozida", cat:"Leguminosas", kcal:172, p:16.6, c:8.7, g:9.0, fib:6.0, medida:"1 concha média ≈ 85 g", porcoes:[85,140]},
+ {id:"ervilha", nome:"Ervilha cozida", cat:"Leguminosas", kcal:88, p:5.4, c:15.6, g:0.4, fib:5.0, medida:"3 colheres de sopa ≈ 75 g", porcoes:[75,120]},
+
+ // Frutas
+ {id:"banana", nome:"Banana prata", cat:"Frutas", kcal:98, p:1.3, c:26.0, g:0.1, fib:2.0, medida:"1 unidade ≈ 70 g", porcoes:[70,140]},
+ {id:"maca", nome:"Maçã com casca", cat:"Frutas", kcal:56, p:0.3, c:15.2, g:0.0, fib:1.3, medida:"1 unidade ≈ 130 g", porcoes:[130,260]},
+ {id:"laranja", nome:"Laranja pera", cat:"Frutas", kcal:45, p:1.0, c:11.5, g:0.1, fib:1.1, medida:"1 unidade ≈ 140 g", porcoes:[140,280]},
+ {id:"mamao", nome:"Mamão papaia", cat:"Frutas", kcal:40, p:0.5, c:10.4, g:0.1, fib:1.8, medida:"1/2 unidade ≈ 150 g", porcoes:[150,300]},
+ {id:"abacate", nome:"Abacate", cat:"Frutas", kcal:96, p:1.2, c:6.0, g:8.4, fib:6.3, medida:"2 colheres de sopa ≈ 60 g", porcoes:[60,100]},
+ {id:"morango", nome:"Morango", cat:"Frutas", kcal:30, p:0.9, c:6.8, g:0.3, fib:1.7, medida:"1 xícara ≈ 140 g", porcoes:[100,140]},
+ {id:"manga", nome:"Manga palmer", cat:"Frutas", kcal:72, p:0.4, c:19.4, g:0.2, fib:1.6, medida:"1 fatia grossa ≈ 100 g", porcoes:[100,150]},
+
+ // Vegetais
+ {id:"brocolis", nome:"Brócolis cozido", cat:"Vegetais", kcal:25, p:2.1, c:4.4, g:0.5, fib:3.4, medida:"3 colheres de sopa ≈ 60 g", porcoes:[60,100,150]},
+ {id:"alface", nome:"Alface crespa", cat:"Vegetais", kcal:11, p:1.3, c:1.7, g:0.2, fib:1.7, medida:"1 prato de folhas ≈ 40 g", porcoes:[40,80]},
+ {id:"tomate", nome:"Tomate", cat:"Vegetais", kcal:15, p:1.1, c:3.1, g:0.2, fib:1.2, medida:"1 unidade média ≈ 110 g", porcoes:[110,160]},
+ {id:"cenoura", nome:"Cenoura crua", cat:"Vegetais", kcal:34, p:1.3, c:7.7, g:0.2, fib:3.2, medida:"1 unidade média ≈ 100 g", porcoes:[60,100]},
+ {id:"couve", nome:"Couve-manteiga refogada", cat:"Vegetais", kcal:90, p:3.1, c:8.7, g:5.4, fib:5.7, medida:"2 colheres de sopa ≈ 50 g", porcoes:[50,100]},
+ {id:"abobrinha", nome:"Abobrinha refogada", cat:"Vegetais", kcal:25, p:1.1, c:4.3, g:0.6, fib:1.6, medida:"3 colheres de sopa ≈ 70 g", porcoes:[70,120]},
+ {id:"pepino", nome:"Pepino", cat:"Vegetais", kcal:10, p:0.9, c:2.0, g:0.0, fib:1.1, medida:"1/2 unidade ≈ 100 g", porcoes:[100,150]},
+
+ // Laticínios
+ {id:"leite-integral", nome:"Leite integral", cat:"Laticínios", kcal:61, p:3.2, c:4.6, g:3.3, fib:0, medida:"1 copo ≈ 200 ml (200 g)", porcoes:[200,300]},
+ {id:"leite-desnatado", nome:"Leite desnatado", cat:"Laticínios", kcal:36, p:3.4, c:4.9, g:0.2, fib:0, medida:"1 copo ≈ 200 ml (200 g)", porcoes:[200,300]},
+ {id:"iogurte-natural", nome:"Iogurte natural integral", cat:"Laticínios", kcal:51, p:4.1, c:1.9, g:3.0, fib:0, medida:"1 pote ≈ 170 g", porcoes:[170,340]},
+ {id:"iogurte-desnatado", nome:"Iogurte natural desnatado", cat:"Laticínios", kcal:41, p:4.3, c:5.8, g:0.2, fib:0, medida:"1 pote ≈ 170 g", porcoes:[170,340]},
+ {id:"queijo-minas", nome:"Queijo minas frescal", cat:"Laticínios", kcal:264, p:17.4, c:3.2, g:20.2, fib:0, medida:"1 fatia média ≈ 30 g", porcoes:[30,60]},
+ {id:"mucarela", nome:"Queijo muçarela", cat:"Laticínios", kcal:330, p:22.6, c:3.0, g:25.2, fib:0, medida:"1 fatia ≈ 20 g", porcoes:[20,40,60]},
+ {id:"requeijao", nome:"Requeijão cremoso", cat:"Laticínios", kcal:257, p:9.6, c:2.4, g:23.4, fib:0, medida:"1 colher de sopa ≈ 30 g", porcoes:[15,30]},
+
+ // Gorduras & sementes
+ {id:"azeite", nome:"Azeite de oliva", cat:"Gorduras e sementes", kcal:884, p:0.0, c:0.0, g:100.0, fib:0, medida:"1 colher de sopa ≈ 13 g", porcoes:[5,13,26]},
+ {id:"manteiga", nome:"Manteiga", cat:"Gorduras e sementes", kcal:726, p:0.4, c:0.1, g:82.0, fib:0, medida:"1 colher de chá ≈ 8 g", porcoes:[8,16]},
+ {id:"amendoim", nome:"Amendoim torrado", cat:"Gorduras e sementes", kcal:606, p:22.5, c:18.7, g:49.6, fib:7.8, medida:"1 punhado ≈ 30 g", porcoes:[15,30]},
+ {id:"pasta-amendoim", nome:"Pasta de amendoim integral", cat:"Gorduras e sementes", kcal:590, p:25.0, c:20.0, g:47.0, fib:6.0, medida:"1 colher de sopa ≈ 15 g", porcoes:[15,30]},
+ {id:"castanha-caju", nome:"Castanha-de-caju torrada", cat:"Gorduras e sementes", kcal:570, p:18.5, c:29.1, g:46.3, fib:3.7, medida:"1 punhado ≈ 30 g", porcoes:[15,30]},
+ {id:"castanha-para", nome:"Castanha-do-pará", cat:"Gorduras e sementes", kcal:643, p:14.5, c:15.1, g:63.5, fib:7.9, medida:"2 unidades ≈ 10 g", porcoes:[10,20]},
+ {id:"chia", nome:"Semente de chia", cat:"Gorduras e sementes", kcal:486, p:16.5, c:42.1, g:30.7, fib:34.4, medida:"1 colher de sopa ≈ 12 g", porcoes:[12,24]},
+ {id:"linhaca", nome:"Semente de linhaça", cat:"Gorduras e sementes", kcal:495, p:14.1, c:43.3, g:32.3, fib:33.5, medida:"1 colher de sopa ≈ 12 g", porcoes:[12,24]},
+ {id:"amendoas", nome:"Amêndoas torradas", cat:"Gorduras e sementes", kcal:581, p:18.6, c:29.5, g:47.3, fib:11.6, medida:"1 punhado ≈ 30 g", porcoes:[15,30]},
+ {id:"nozes", nome:"Nozes", cat:"Gorduras e sementes", kcal:620, p:14.0, c:18.4, g:59.4, fib:7.2, medida:"3 unidades ≈ 24 g", porcoes:[12,24,36]},
+ {id:"semente-abobora", nome:"Semente de abóbora torrada", cat:"Gorduras e sementes", kcal:559, p:30.2, c:10.7, g:49.0, fib:6.0, medida:"1 colher de sopa ≈ 15 g", porcoes:[15,30]},
+ {id:"coco-ralado", nome:"Coco ralado fresco", cat:"Gorduras e sementes", kcal:406, p:3.7, c:10.4, g:42.0, fib:5.4, medida:"2 colheres de sopa ≈ 20 g", porcoes:[20,40]},
+ {id:"azeitona", nome:"Azeitona verde", cat:"Gorduras e sementes", kcal:137, p:1.2, c:4.5, g:13.0, fib:3.8, medida:"8 unidades ≈ 30 g", porcoes:[30,60]},
+
+ // Mais fontes de fibra
+ {id:"farelo-aveia", nome:"Farelo de aveia", cat:"Carboidratos", kcal:246, p:17.3, c:66.2, g:7.0, fib:15.4, medida:"2 colheres de sopa ≈ 20 g", porcoes:[20,40]},
+ {id:"milho-verde", nome:"Milho verde cozido", cat:"Carboidratos", kcal:98, p:3.2, c:17.1, g:0.8, fib:4.6, medida:"4 colheres de sopa ≈ 80 g", porcoes:[80,120]},
+ {id:"quiabo", nome:"Quiabo cozido", cat:"Vegetais", kcal:33, p:2.0, c:6.7, g:0.3, fib:4.6, medida:"3 colheres de sopa ≈ 60 g", porcoes:[60,100]},
+];
+
+const CATEGORIAS = ["Todos","Carboidratos","Proteínas","Leguminosas","Frutas","Vegetais","Laticínios","Gorduras e sementes","Ricos em fibra"];
+const LIMIAR_FIBRA = 4; // g de fibra por 100 g para entrar no filtro "Ricos em fibra"
+
+const OBJETIVOS = [
+ {id:"secar-rapido", ic:"🔥", nome:"Secar o mais rápido possível", desc:"Déficit agressivo de calorias para perda de peso acelerada.", formula:"rápido: peso × 20 · científico: gasto diário − 25%", mult:20, usaMeta:true},
+ {id:"secar-massa", ic:"🛡️", nome:"Secar preservando massa muscular", desc:"Déficit calórico moderado com proteína alta calculada pelo peso que você quer alcançar.", formula:"rápido: peso × 20 · científico: gasto − 20% · proteína pelo peso desejado", mult:20, usaMeta:true},
+ {id:"manter", ic:"⚖️", nome:"Manter o peso", desc:"Equilíbrio para sustentar o peso atual com boa energia.", formula:"rápido: peso × 30 · científico: gasto diário estimado", mult:30, usaMeta:false},
+ {id:"ganhar-massa", ic:"💪", nome:"Ganhar massa muscular", desc:"Superávit calórico controlado para hipertrofia com treino de força.", formula:"rápido: peso × 35 · científico: gasto + 12%", mult:35, usaMeta:false},
+ {id:"ganhar-peso", ic:"📈", nome:"Ganhar peso", desc:"Superávit calórico para quem precisa aumentar o peso corporal.", formula:"rápido: peso × 35 · científico: gasto + 15%", mult:35, usaMeta:false},
+];
+
+/* =================== ESTADO =================== */
+let perfil = null;     // {nome, peso, altura, idade, meta, objetivoId}
+let metas  = null;     // {kcal, prot, gord, carb, fib, aguaMl}
+let refeicoes = [];    // [{nome, itens:[{foodId, gramas}]}]
+let objetivoSel = null;
+let refDestino = null; // índice da refeição que está adicionando alimento
+let alimentoSel = null;
+let catAtiva = "Todos";
+let metodoSel = "cientifico";
+let modoTroca = null;  // {ri, ii} quando o modal está em modo de substituição
+let prefSel = "todos"; // "todos" | "veg"
+let emConsulta = false;
+let viewAnterior = "etapa1";
+let consultaItens = []; // [{foodId, gramas}] da consulta rápida
+
+const REFS_PADRAO = ["Café da manhã","Lanche da manhã","Almoço","Lanche da tarde","Jantar","Ceia"];
+
+/* =================== HELPERS =================== */
+const $ = s => document.querySelector(s);
+const fmt = (n, dec=0) => n.toLocaleString("pt-BR",{minimumFractionDigits:dec, maximumFractionDigits:dec});
+const alimento = id => ALIMENTOS.find(a=>a.id===id);
+function nutri(it){
+  const a = alimento(it.foodId), f = it.gramas/100;
+  return {kcal:a.kcal*f, p:a.p*f, c:a.c*f, g:a.g*f, fib:a.fib*f};
+}
+function totalRef(r){
+  return r.itens.reduce((t,it)=>{const n=nutri(it); t.kcal+=n.kcal;t.p+=n.p;t.c+=n.c;t.g+=n.g;t.fib+=n.fib;return t;},{kcal:0,p:0,c:0,g:0,fib:0});
+}
+function totalDia(){
+  return refeicoes.reduce((t,r)=>{const n=totalRef(r); t.kcal+=n.kcal;t.p+=n.p;t.c+=n.c;t.g+=n.g;t.fib+=n.fib;return t;},{kcal:0,p:0,c:0,g:0,fib:0});
+}
+
+/* =================== ETAPA 1 =================== */
+function montaObjetivos(){
+  const box = $("#objetivos");
+  box.innerHTML = "";
+  OBJETIVOS.forEach(o=>{
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "obj";
+    b.dataset.id = o.id;
+    b.innerHTML = `<span class="nome"><span class="ic">${o.ic}</span>${o.nome}</span>
                    <span class="desc">${o.desc}</span>
                    <span class="formula">${o.formula}</span>`;
-        b.addEventListener("click", () => {
-          objetivoSel = o;
-          document.querySelectorAll(".obj").forEach(x => x.classList.toggle("ativo", x.dataset.id === o.id));
-          $("#campo-meta").classList.toggle("visivel", o.usaMeta);
-        });
-        box.appendChild(b);
-      });
-    }
-
-    document.querySelectorAll("#metodo .opc").forEach(b => b.addEventListener("click", e => {
-      metodoSel = e.currentTarget.dataset.met;
-      document.querySelectorAll("#metodo .opc").forEach(x => x.classList.toggle("ativo", x.dataset.met === metodoSel));
-    }));
-
-    function calcularMetas(p, obj) {
-      let kcal, base = null;
-      const avisos = [];
-
-      if (p.metodo === "cientifico") {
-        // Mifflin-St Jeor + fator de atividade
-        const bmr = 10 * p.peso + 6.25 * p.altura - 5 * p.idade + (p.sexo === "M" ? 5 : -161);
-        const tdee = bmr * p.atividade;
-        const ajuste = { "secar-rapido": 0.75, "secar-massa": 0.80, "manter": 1, "ganhar-massa": 1.12, "ganhar-peso": 1.15 }[obj.id];
-        kcal = Math.round(tdee * ajuste);
-        base = { bmr: Math.round(bmr), tdee: Math.round(tdee) };
-      } else {
-        kcal = Math.round(p.peso * obj.mult);
-      }
-
-      // piso de segurança calórica
-      const piso = p.sexo === "F" ? 1200 : (p.sexo === "M" ? 1400 : 1300);
-      if (kcal < piso) {
-        avisos.push(`As calorias calculadas (${fmt(kcal)} kcal) ficaram abaixo do mínimo seguro — ajustamos para ${fmt(piso)} kcal/dia. Déficits muito agressivos comprometem saúde, energia e aderência à dieta.`);
-        kcal = piso;
-      }
-
-      // proteína: nos objetivos de emagrecimento, usa o peso desejado
-      const pesoProt = obj.usaMeta && p.meta ? p.meta : p.peso;
-      const gPorKg = { "secar-rapido": 2.0, "secar-massa": 2.2, "manter": 1.6, "ganhar-massa": 2.0, "ganhar-peso": 1.8 };
-      const prot = Math.round(pesoProt * (p.metodo === "cientifico" ? gPorKg[obj.id] : 1.8));
-
-      const gord = Math.round(p.peso * 0.7);
-
-      let fib = Math.round((kcal / 1000) * 14);
-      if (p.metodo === "cientifico") fib = Math.max(fib, 25);
-
-      let carb = Math.round((kcal - prot * 4 - gord * 9) / 4);
-      if (carb < 50) {
-        avisos.push(`Com essas metas sobram apenas ${fmt(Math.max(carb, 0))} g de carboidrato por dia — pouco para manter energia e desempenho nos treinos. Considere um déficit menos agressivo ou revisar o peso desejado.`);
-        carb = Math.max(carb, 0);
-      }
-
-      const aguaMl = Math.min(Math.round(p.peso * 35), 4500);
-      return { kcal, prot, gord, carb, fib, aguaMl, base, avisos };
-    }
-
-    $("#btn-calcular").addEventListener("click", () => {
-      const peso = parseFloat($("#in-peso").value);
-      const altura = parseFloat($("#in-altura").value);
-      const idade = parseInt($("#in-idade").value) || null;
-      const sexo = $("#in-sexo").value;
-      const atividade = parseFloat($("#in-atividade").value);
-      const meta = parseFloat($("#in-meta").value) || null;
-      const nome = $("#in-nome").value.trim();
-
-      if (!peso || peso < 30 || peso > 300) { alert("Informe um peso válido (em kg)."); $("#in-peso").focus(); return; }
-      if (!altura || altura < 100 || altura > 230) { alert("Informe uma altura válida (em cm)."); $("#in-altura").focus(); return; }
-      if (metodoSel === "cientifico") {
-        if (!sexo) { alert("Para a estimativa científica, selecione o sexo (ou use as fórmulas rápidas)."); $("#in-sexo").focus(); return; }
-        if (!idade) { alert("Para a estimativa científica, informe a idade (ou use as fórmulas rápidas)."); $("#in-idade").focus(); return; }
-      }
-      if (!objetivoSel) { alert("Escolha um objetivo para continuar."); return; }
-      if (objetivoSel.usaMeta && !meta) { alert("Informe o peso que você quer alcançar."); $("#in-meta").focus(); return; }
-
-      perfil = { nome, peso, altura, idade, sexo, atividade, meta, objetivoId: objetivoSel.id, metodo: metodoSel };
-      metas = calcularMetas(perfil, objetivoSel);
-
-      if (refeicoes.length === 0) {
-        refeicoes = REFS_PADRAO.map(n => ({ nome: n, itens: [] }));
-      }
-
-      $("#etapa1").style.display = "none";
-      $("#etapa2").style.display = "block";
-      $("#btn-editar-perfil").style.display = "inline-block";
-      $("#btn-imprimir-topo").style.display = "inline-block";
-      renderTudo();
-      window.scrollTo({ top: 0 });
+    b.addEventListener("click", ()=>{
+      objetivoSel = o;
+      document.querySelectorAll(".obj").forEach(x=>x.classList.toggle("ativo", x.dataset.id===o.id));
+      $("#campo-meta").classList.toggle("visivel", o.usaMeta);
     });
+    box.appendChild(b);
+  });
+}
 
-    $("#btn-editar-perfil").addEventListener("click", () => {
-      $("#etapa2").style.display = "none";
-      $("#etapa1").style.display = "block";
-      window.scrollTo({ top: 0 });
-    });
+document.querySelectorAll("#metodo .opc").forEach(b=>b.addEventListener("click", e=>{
+  metodoSel = e.currentTarget.dataset.met;
+  document.querySelectorAll("#metodo .opc").forEach(x=>x.classList.toggle("ativo", x.dataset.met===metodoSel));
+}));
 
-    /* =================== ETAPA 2: RENDER =================== */
-    function renderTudo() {
-      renderResumo();
-      renderRefeicoes();
-      renderPainel();
-    }
+document.querySelectorAll("#pref-alimentar .opc").forEach(b=>b.addEventListener("click", e=>{
+  prefSel = e.currentTarget.dataset.pref;
+  document.querySelectorAll("#pref-alimentar .opc").forEach(x=>x.classList.toggle("ativo", x.dataset.pref===prefSel));
+}));
 
-    function renderResumo() {
-      const o = OBJETIVOS.find(x => x.id === perfil.objetivoId);
-      const imc = perfil.peso / Math.pow(perfil.altura / 100, 2);
-      let classImc = "abaixo do peso";
-      if (imc >= 18.5) classImc = "peso adequado";
-      if (imc >= 25) classImc = "sobrepeso";
-      if (imc >= 30) classImc = "obesidade";
-      const ola = perfil.nome ? `${perfil.nome}, sua dieta` : "Sua dieta";
-      const tdeeChip = metas.base ? `<span class="chip">gasto diário estimado: <b>${fmt(metas.base.tdee)} kcal</b></span>` : "";
-      const avisosHtml = metas.avisos.length
-        ? `<div class="alerta"><b>⚠ Atenção</b>${metas.avisos.join("<br><br>")}</div>` : "";
-      $("#resumo-perfil").innerHTML = `
+function calcularMetas(p, obj){
+  let kcal, base = null;
+  const avisos = [];
+
+  if(p.metodo === "cientifico"){
+    // Mifflin-St Jeor + fator de atividade
+    const bmr = 10*p.peso + 6.25*p.altura - 5*p.idade + (p.sexo==="M" ? 5 : -161);
+    const tdee = bmr * p.atividade;
+    const ajuste = {"secar-rapido":0.75, "secar-massa":0.80, "manter":1, "ganhar-massa":1.12, "ganhar-peso":1.15}[obj.id];
+    kcal = Math.round(tdee * ajuste);
+    base = {bmr: Math.round(bmr), tdee: Math.round(tdee)};
+  } else {
+    kcal = Math.round(p.peso * obj.mult);
+  }
+
+  // piso de segurança calórica
+  const piso = p.sexo === "F" ? 1200 : (p.sexo === "M" ? 1400 : 1300);
+  if(kcal < piso){
+    avisos.push(`As calorias calculadas (${fmt(kcal)} kcal) ficaram abaixo do mínimo seguro — ajustamos para ${fmt(piso)} kcal/dia. Déficits muito agressivos comprometem saúde, energia e aderência à dieta.`);
+    kcal = piso;
+  }
+
+  // proteína: nos objetivos de emagrecimento, usa o peso desejado
+  const pesoProt = obj.usaMeta && p.meta ? p.meta : p.peso;
+  const gPorKg = {"secar-rapido":2.0, "secar-massa":2.2, "manter":1.6, "ganhar-massa":2.0, "ganhar-peso":1.8};
+  const prot = Math.round(pesoProt * (p.metodo==="cientifico" ? gPorKg[obj.id] : 1.8));
+
+  const gord = Math.round(p.peso * 0.7);
+
+  let fib = Math.round((kcal/1000) * 14);
+  if(p.metodo==="cientifico") fib = Math.max(fib, 25);
+
+  let carb = Math.round((kcal - prot*4 - gord*9) / 4);
+  if(carb < 50){
+    avisos.push(`Com essas metas sobram apenas ${fmt(Math.max(carb,0))} g de carboidrato por dia — pouco para manter energia e desempenho nos treinos. Considere um déficit menos agressivo ou revisar o peso desejado.`);
+    carb = Math.max(carb, 0);
+  }
+
+  const aguaMl = Math.min(Math.round(p.peso * 35), 4500);
+  return {kcal, prot, gord, carb, fib, aguaMl, base, avisos};
+}
+
+$("#btn-calcular").addEventListener("click", ()=>{
+  const peso = parseFloat($("#in-peso").value);
+  const altura = parseFloat($("#in-altura").value);
+  const idade = parseInt($("#in-idade").value) || null;
+  const sexo = $("#in-sexo").value;
+  const atividade = parseFloat($("#in-atividade").value);
+  const meta = parseFloat($("#in-meta").value) || null;
+  const nome = $("#in-nome").value.trim();
+
+  if(!peso || peso<30 || peso>300){ alert("Informe um peso válido (em kg)."); $("#in-peso").focus(); return; }
+  if(!altura || altura<100 || altura>230){ alert("Informe uma altura válida (em cm)."); $("#in-altura").focus(); return; }
+  if(metodoSel==="cientifico"){
+    if(!sexo){ alert("Para a estimativa científica, selecione o sexo (ou use as fórmulas rápidas)."); $("#in-sexo").focus(); return; }
+    if(!idade){ alert("Para a estimativa científica, informe a idade (ou use as fórmulas rápidas)."); $("#in-idade").focus(); return; }
+  }
+  if(!objetivoSel){ alert("Escolha um objetivo para continuar."); return; }
+  if(objetivoSel.usaMeta && !meta){ alert("Informe o peso que você quer alcançar."); $("#in-meta").focus(); return; }
+
+  perfil = {nome, peso, altura, idade, sexo, atividade, meta, objetivoId: objetivoSel.id, metodo: metodoSel, veg: prefSel === "veg"};
+  metas = calcularMetas(perfil, objetivoSel);
+
+  if(refeicoes.length===0){
+    refeicoes = REFS_PADRAO.map(n=>({nome:n, itens:[]}));
+  }
+
+  $("#etapa1").style.display = "none";
+  $("#etapa2").style.display = "block";
+  $("#btn-editar-perfil").style.display = "inline-block";
+  $("#btn-imprimir-topo").style.display = "inline-block";
+  renderTudo();
+  window.scrollTo({top:0});
+});
+
+$("#btn-editar-perfil").addEventListener("click", ()=>{
+  emConsulta = false;
+  $("#btn-consulta").textContent = "🔍 Consulta rápida";
+  $("#consulta").style.display = "none";
+  $("#etapa2").style.display = "none";
+  $("#etapa1").style.display = "block";
+  window.scrollTo({top:0});
+});
+
+/* =================== ETAPA 2: RENDER =================== */
+function renderTudo(){
+  renderResumo();
+  renderRefeicoes();
+  renderPainel();
+}
+
+function renderResumo(){
+  const o = OBJETIVOS.find(x=>x.id===perfil.objetivoId);
+  const imc = perfil.peso / Math.pow(perfil.altura/100, 2);
+  let classImc = "abaixo do peso";
+  if(imc>=18.5) classImc = "peso adequado";
+  if(imc>=25) classImc = "sobrepeso";
+  if(imc>=30) classImc = "obesidade";
+  const ola = perfil.nome ? `${perfil.nome}, sua dieta` : "Sua dieta";
+  const tdeeChip = metas.base ? `<span class="chip">gasto diário estimado: <b>${fmt(metas.base.tdee)} kcal</b></span>` : "";
+  const avisosHtml = metas.avisos.length
+    ? `<div class="alerta"><b>⚠ Atenção</b>${metas.avisos.join("<br><br>")}</div>` : "";
+  $("#resumo-perfil").innerHTML = `
     <h2>${ola} de hoje</h2>
     <span class="chip obj-chip">${o.ic} <b>${o.nome}</b></span>
-    <span class="chip"><b>${fmt(perfil.peso, 1)}</b> kg · <b>${fmt(perfil.altura)}</b> cm</span>
-    ${perfil.meta ? `<span class="chip">meta: <b>${fmt(perfil.meta, 1)} kg</b></span>` : ""}
-    <span class="chip">IMC <b>${fmt(imc, 1)}</b> (${classImc})</span>
+    <span class="chip"><b>${fmt(perfil.peso,1)}</b> kg · <b>${fmt(perfil.altura)}</b> cm</span>
+    ${perfil.meta ? `<span class="chip">meta: <b>${fmt(perfil.meta,1)} kg</b></span>` : ""}
+    <span class="chip">IMC <b>${fmt(imc,1)}</b> (${classImc})</span>
+    ${perfil.veg ? `<span class="chip">🌱 <b>vegetariano</b></span>` : ""}
     ${tdeeChip}
     ${avisosHtml}`;
-    }
+}
 
-    function renderRefeicoes() {
-      const box = $("#refeicoes");
-      box.innerHTML = "";
-      refeicoes.forEach((r, ri) => {
-        const t = totalRef(r);
-        const card = document.createElement("article");
-        card.className = "refeicao";
-        const itensHtml = r.itens.length === 0
-          ? `<li class="vazio">Nenhum alimento ainda. Toque em “Adicionar alimento”.</li>`
-          : r.itens.map((it, ii) => {
-            const a = alimento(it.foodId), n = nutri(it);
-            return `<li class="item">
+function renderRefeicoes(){
+  const box = $("#refeicoes");
+  box.innerHTML = "";
+  refeicoes.forEach((r, ri)=>{
+    const t = totalRef(r);
+    const card = document.createElement("article");
+    card.className = "refeicao";
+    const itensHtml = r.itens.length===0
+      ? `<li class="vazio">Nenhum alimento ainda. Toque em “Adicionar alimento”.</li>`
+      : r.itens.map((it, ii)=>{
+          const a = alimento(it.foodId), n = nutri(it);
+          return `<li class="item">
             <div><span class="al-nome">${a.nome}</span><span class="al-medida">${a.medida}</span></div>
             <input class="qtd" type="number" min="1" max="2000" step="1" value="${it.gramas}"
                    aria-label="Quantidade em gramas de ${a.nome}"
                    data-ref="${ri}" data-item="${ii}">
-            <div class="macros"><b>${fmt(n.kcal)} kcal</b><br>P ${fmt(n.p, 1)} · C ${fmt(n.c, 1)} · G ${fmt(n.g, 1)}</div>
+            <div class="macros"><b>${fmt(n.kcal)} kcal</b><br>P ${fmt(n.p,1)} · C ${fmt(n.c,1)} · G ${fmt(n.g,1)}</div>
             <button class="btn-troca" data-troca-ref="${ri}" data-troca-item="${ii}" title="Substituir por alimento equivalente" aria-label="Substituir ${a.nome} por equivalente">⇄</button>
             <button class="btn-x" data-rem-ref="${ri}" data-rem-item="${ii}" aria-label="Remover ${a.nome}">✕</button>
           </li>`;
-          }).join("");
-        card.innerHTML = `
+        }).join("");
+    card.innerHTML = `
       <div class="ref-cab">
-        <input class="nome-ref" value="${r.nome.replace(/"/g, '&quot;')}" data-ref="${ri}" aria-label="Nome da refeição">
+        <input class="nome-ref" value="${r.nome.replace(/"/g,'&quot;')}" data-ref="${ri}" aria-label="Nome da refeição">
         <span class="ref-kcal"><b>${fmt(t.kcal)}</b> kcal · P ${fmt(t.p)} g</span>
         <button class="btn-x" data-del-ref="${ri}" aria-label="Excluir refeição ${r.nome}">🗑</button>
       </div>
       <ul class="itens">${itensHtml}</ul>
       <div class="ref-pe"><button class="btn-add-alimento" data-add-ref="${ri}">+ Adicionar alimento</button></div>`;
-        box.appendChild(card);
-      });
+    box.appendChild(card);
+  });
 
-      // eventos
-      box.querySelectorAll(".qtd").forEach(inp => {
-        inp.addEventListener("input", e => {
-          const g = parseFloat(e.target.value);
-          if (!g || g < 1) return;
-          refeicoes[+e.target.dataset.ref].itens[+e.target.dataset.item].gramas = g;
-          atualizaNumeros();
-        });
-        inp.addEventListener("change", renderTudo);
-      });
-      box.querySelectorAll("[data-rem-ref]").forEach(b => b.addEventListener("click", e => {
-        refeicoes[+e.currentTarget.dataset.remRef].itens.splice(+e.currentTarget.dataset.remItem, 1);
-        renderTudo();
-      }));
-      box.querySelectorAll("[data-del-ref]").forEach(b => b.addEventListener("click", e => {
-        const ri = +e.currentTarget.dataset.delRef;
-        if (refeicoes[ri].itens.length === 0 || confirm(`Excluir a refeição “${refeicoes[ri].nome}” e seus alimentos?`)) {
-          refeicoes.splice(ri, 1); renderTudo();
-        }
-      }));
-      box.querySelectorAll(".nome-ref").forEach(inp => inp.addEventListener("change", e => {
-        refeicoes[+e.target.dataset.ref].nome = e.target.value.trim() || "Refeição";
-      }));
-      box.querySelectorAll("[data-add-ref]").forEach(b => b.addEventListener("click", e => {
-        abrirModal(+e.currentTarget.dataset.addRef);
-      }));
-      box.querySelectorAll("[data-troca-ref]").forEach(b => b.addEventListener("click", e => {
-        abrirTroca(+e.currentTarget.dataset.trocaRef, +e.currentTarget.dataset.trocaItem);
-      }));
-    }
-
-    /* só atualiza os números (digitação fluida na quantidade) */
-    function atualizaNumeros() {
-      renderPainel();
-      document.querySelectorAll(".refeicao").forEach((card, ri) => {
-        if (!refeicoes[ri]) return;
-        const t = totalRef(refeicoes[ri]);
-        const span = card.querySelector(".ref-kcal");
-        if (span) span.innerHTML = `<b>${fmt(t.kcal)}</b> kcal · P ${fmt(t.p)} g`;
-        card.querySelectorAll(".item").forEach((li, ii) => {
-          const it = refeicoes[ri].itens[ii];
-          if (!it) return;
-          const n = nutri(it);
-          const m = li.querySelector(".macros");
-          if (m) m.innerHTML = `<b>${fmt(n.kcal)} kcal</b><br>P ${fmt(n.p, 1)} · C ${fmt(n.c, 1)} · G ${fmt(n.g, 1)}`;
-        });
-      });
-    }
-
-    $("#btn-nova-ref").addEventListener("click", () => {
-      refeicoes.push({ nome: `Refeição ${refeicoes.length + 1}`, itens: [] });
-      renderTudo();
+  // eventos
+  box.querySelectorAll(".qtd").forEach(inp=>{
+    inp.addEventListener("input", e=>{
+      const g = parseFloat(e.target.value);
+      if(!g || g<1) return;
+      refeicoes[+e.target.dataset.ref].itens[+e.target.dataset.item].gramas = g;
+      atualizaNumeros();
     });
+    inp.addEventListener("change", renderTudo);
+  });
+  box.querySelectorAll("[data-rem-ref]").forEach(b=>b.addEventListener("click", e=>{
+    refeicoes[+e.currentTarget.dataset.remRef].itens.splice(+e.currentTarget.dataset.remItem,1);
+    renderTudo();
+  }));
+  box.querySelectorAll("[data-del-ref]").forEach(b=>b.addEventListener("click", e=>{
+    const ri = +e.currentTarget.dataset.delRef;
+    if(refeicoes[ri].itens.length===0 || confirm(`Excluir a refeição “${refeicoes[ri].nome}” e seus alimentos?`)){
+      refeicoes.splice(ri,1); renderTudo();
+    }
+  }));
+  box.querySelectorAll(".nome-ref").forEach(inp=>inp.addEventListener("change", e=>{
+    refeicoes[+e.target.dataset.ref].nome = e.target.value.trim() || "Refeição";
+  }));
+  box.querySelectorAll("[data-add-ref]").forEach(b=>b.addEventListener("click", e=>{
+    abrirModal(+e.currentTarget.dataset.addRef);
+  }));
+  box.querySelectorAll("[data-troca-ref]").forEach(b=>b.addEventListener("click", e=>{
+    abrirTroca(+e.currentTarget.dataset.trocaRef, +e.currentTarget.dataset.trocaItem);
+  }));
+}
 
-    $("#btn-limpar").addEventListener("click", () => {
-      if (confirm("Remover todos os alimentos da dieta?")) {
-        refeicoes.forEach(r => r.itens = []);
-        renderTudo();
-      }
+/* só atualiza os números (digitação fluida na quantidade) */
+function atualizaNumeros(){
+  renderPainel();
+  document.querySelectorAll(".refeicao").forEach((card, ri)=>{
+    if(!refeicoes[ri]) return;
+    const t = totalRef(refeicoes[ri]);
+    const span = card.querySelector(".ref-kcal");
+    if(span) span.innerHTML = `<b>${fmt(t.kcal)}</b> kcal · P ${fmt(t.p)} g`;
+    card.querySelectorAll(".item").forEach((li, ii)=>{
+      const it = refeicoes[ri].itens[ii];
+      if(!it) return;
+      const n = nutri(it);
+      const m = li.querySelector(".macros");
+      if(m) m.innerHTML = `<b>${fmt(n.kcal)} kcal</b><br>P ${fmt(n.p,1)} · C ${fmt(n.c,1)} · G ${fmt(n.g,1)}`;
     });
+  });
+}
 
-    /* =================== PAINEL DO DIA =================== */
-    const CIRC = 2 * Math.PI * 52;
-    function renderPainel() {
-      const t = totalDia();
-      // anel de calorias
-      const pct = metas.kcal ? t.kcal / metas.kcal : 0;
-      const anel = $("#anel-prog");
-      anel.setAttribute("stroke-dasharray", CIRC);
-      anel.setAttribute("stroke-dashoffset", CIRC * (1 - Math.min(pct, 1)));
-      anel.classList.toggle("estourou", pct > 1.05);
-      $("#kcal-atual").textContent = fmt(t.kcal);
-      $("#kcal-meta").textContent = fmt(metas.kcal);
-      const resta = metas.kcal - t.kcal;
-      $("#kcal-restante").innerHTML = resta >= 0
-        ? `restam <b>${fmt(resta)}</b> kcal`
-        : `<b style="color:var(--papaia)">${fmt(-resta)} kcal acima da meta</b>`;
+$("#btn-nova-ref").addEventListener("click", ()=>{
+  refeicoes.push({nome:`Refeição ${refeicoes.length+1}`, itens:[]});
+  renderTudo();
+});
 
-      // barras
-      const defs = [
-        { lab: "Proteínas", val: t.p, meta: metas.prot, un: "g", atingirBom: true },
-        { lab: "Carboidratos", val: t.c, meta: metas.carb, un: "g", atingirBom: false },
-        { lab: "Gorduras", val: t.g, meta: metas.gord, un: "g", atingirBom: false },
-        { lab: "Fibras", val: t.fib, meta: metas.fib, un: "g", atingirBom: true },
-      ];
-      $("#barras").innerHTML = defs.map(d => {
-        const p = d.meta ? d.val / d.meta : 0;
-        let cls = "";
-        if (p > 1.12) cls = "estourou";
-        else if (p >= 1 && d.atingirBom) cls = "ok";
-        return `<div class="barra">
+$("#btn-limpar").addEventListener("click", ()=>{
+  if(confirm("Remover todos os alimentos da dieta?")){
+    refeicoes.forEach(r=>r.itens=[]);
+    renderTudo();
+  }
+});
+
+/* =================== PAINEL DO DIA =================== */
+const CIRC = 2 * Math.PI * 52;
+function renderPainel(){
+  const t = totalDia();
+  // anel de calorias
+  const pct = metas.kcal ? t.kcal/metas.kcal : 0;
+  const anel = $("#anel-prog");
+  anel.setAttribute("stroke-dasharray", CIRC);
+  anel.setAttribute("stroke-dashoffset", CIRC * (1 - Math.min(pct,1)));
+  anel.classList.toggle("estourou", pct>1.05);
+  $("#kcal-atual").textContent = fmt(t.kcal);
+  $("#kcal-meta").textContent = fmt(metas.kcal);
+  const resta = metas.kcal - t.kcal;
+  $("#kcal-restante").innerHTML = resta>=0
+    ? `restam <b>${fmt(resta)}</b> kcal`
+    : `<b style="color:var(--papaia)">${fmt(-resta)} kcal acima da meta</b>`;
+
+  // barras
+  const defs = [
+    {lab:"Proteínas", val:t.p, meta:metas.prot, un:"g", atingirBom:true},
+    {lab:"Carboidratos", val:t.c, meta:metas.carb, un:"g", atingirBom:false},
+    {lab:"Gorduras", val:t.g, meta:metas.gord, un:"g", atingirBom:false},
+    {lab:"Fibras", val:t.fib, meta:metas.fib, un:"g", atingirBom:true},
+  ];
+  $("#barras").innerHTML = defs.map(d=>{
+    const p = d.meta ? d.val/d.meta : 0;
+    let cls = "";
+    if(p>1.12) cls = "estourou";
+    else if(p>=1 && d.atingirBom) cls = "ok";
+    return `<div class="barra">
       <div class="topo-b"><span class="lab">${d.lab}</span>
       <span class="num">${fmt(d.val)} / ${fmt(d.meta)} ${d.un}</span></div>
-      <div class="trilho"><div class="fill ${cls}" style="width:${Math.min(p * 100, 100)}%"></div></div>
+      <div class="trilho"><div class="fill ${cls}" style="width:${Math.min(p*100,100)}%"></div></div>
     </div>`;
-      }).join("");
+  }).join("");
 
-      const litros = metas.aguaMl / 1000;
-      $("#agua-meta").textContent = `${fmt(litros, 1)} L (${fmt(metas.aguaMl)} ml)`;
+  const litros = metas.aguaMl/1000;
+  $("#agua-meta").textContent = `${fmt(litros,1)} L (${fmt(metas.aguaMl)} ml)`;
 
-      renderSugestoes(t);
-    }
+  renderSugestoes(t);
+}
 
-    /* ============ "Quanto falta" + sugestões ============ */
-    const SUG_PROT = ["frango-peito", "atum-lata", "ovo", "whey"];
-    const SUG_FIB = ["feijao-carioca", "aveia", "chia", "brocolis"];
-    const SUG_KCAL = ["arroz-branco", "batata-doce", "banana", "pasta-amendoim"];
+/* ============ "Quanto falta" + sugestões ============ */
+const SUG_PROT_PADRAO = ["frango-peito","atum-lata","ovo","whey"];
+const SUG_PROT_VEG    = ["tofu","pts-soja","ovo","whey"];
+const SUG_FIB  = ["feijao-carioca","aveia","chia","brocolis"];
+const SUG_KCAL = ["arroz-branco","batata-doce","banana","pasta-amendoim"];
+function poolProt(){ return (perfil && perfil.veg) ? SUG_PROT_VEG : SUG_PROT_PADRAO; }
 
-    function htmlSug(foodId, gramas, rotulo) {
-      const a = alimento(foodId), f = gramas / 100;
-      return `<button class="sug-item" data-sug-food="${foodId}" data-sug-g="${gramas}">
+function htmlSug(foodId, gramas, rotulo){
+  const a = alimento(foodId), f = gramas/100;
+  return `<button class="sug-item" data-sug-food="${foodId}" data-sug-g="${gramas}">
     <span class="mais" aria-hidden="true">+</span>
     <span><b>${fmt(gramas)} g · ${a.nome}</b>
-    <span class="det">${rotulo} · custa ${fmt(a.kcal * f)} kcal</span></span>
+    <span class="det">${rotulo} · custa ${fmt(a.kcal*f)} kcal</span></span>
   </button>`;
+}
+function gramasParaNutriente(a, falta, nutriPor100){
+  if(nutriPor100 <= 0) return 0;
+  const cap = a.porcoes[a.porcoes.length-1];
+  const g = Math.round((falta / (nutriPor100/100)) / 5) * 5;
+  return Math.max(10, Math.min(g, cap));
+}
+
+function renderSugestoes(t){
+  const box = $("#sugestoes");
+  if(t.kcal === 0){ box.innerHTML = ""; return; }
+
+  const restK  = metas.kcal - t.kcal;
+  const faltaP = metas.prot - t.p;
+  const faltaF = metas.fib  - t.fib;
+  let html = `<h4>🎯 Para fechar o dia</h4>`;
+  let temBotoes = false;
+
+  if(restK < -60){
+    let maior = null, maiorK = 0, refNome = "";
+    refeicoes.forEach(r=>r.itens.forEach(it=>{
+      const k = nutri(it).kcal;
+      if(k > maiorK){ maiorK = k; maior = it; refNome = r.nome; }
+    }));
+    html += `<p class="excesso">Você está <b>${fmt(-restK)} kcal acima</b> da meta. Maior fonte calórica: <b>${fmt(maior.gramas)} g de ${alimento(maior.foodId).nome}</b> (${fmt(maiorK)} kcal, em ${refNome}). Reduza a porção ou use o botão ⇄ para trocar por um equivalente mais leve.</p>`;
+  } else {
+    let blocos = 0;
+    if(faltaP > 8){
+      blocos++;
+      html += `<p class="falta">Faltam <b>${fmt(faltaP)} g</b> de proteína. Sugestões:</p><div class="sug-lista">` +
+        poolProt().slice(0,3).map(id=>{
+          const a = alimento(id);
+          const g = gramasParaNutriente(a, faltaP, a.p);
+          return htmlSug(id, g, `+${fmt(a.p*g/100)} g de proteína`);
+        }).join("") + `</div>`;
+      temBotoes = true;
     }
-    function gramasParaNutriente(a, falta, nutriPor100) {
-      if (nutriPor100 <= 0) return 0;
-      const cap = a.porcoes[a.porcoes.length - 1];
-      const g = Math.round((falta / (nutriPor100 / 100)) / 5) * 5;
-      return Math.max(10, Math.min(g, cap));
+    if(faltaF > 5 && blocos < 2){
+      blocos++;
+      html += `<p class="falta">Faltam <b>${fmt(faltaF)} g</b> de fibra. Sugestões:</p><div class="sug-lista">` +
+        SUG_FIB.slice(0,3).map(id=>{
+          const a = alimento(id);
+          const g = gramasParaNutriente(a, faltaF, a.fib);
+          return htmlSug(id, g, `+${fmt(a.fib*g/100)} g de fibra`);
+        }).join("") + `</div>`;
+      temBotoes = true;
     }
-
-    function renderSugestoes(t) {
-      const box = $("#sugestoes");
-      if (t.kcal === 0) { box.innerHTML = ""; return; }
-
-      const restK = metas.kcal - t.kcal;
-      const faltaP = metas.prot - t.p;
-      const faltaF = metas.fib - t.fib;
-      let html = `<h4>🎯 Para fechar o dia</h4>`;
-      let temBotoes = false;
-
-      if (restK < -60) {
-        let maior = null, maiorK = 0, refNome = "";
-        refeicoes.forEach(r => r.itens.forEach(it => {
-          const k = nutri(it).kcal;
-          if (k > maiorK) { maiorK = k; maior = it; refNome = r.nome; }
-        }));
-        html += `<p class="excesso">Você está <b>${fmt(-restK)} kcal acima</b> da meta. Maior fonte calórica: <b>${fmt(maior.gramas)} g de ${alimento(maior.foodId).nome}</b> (${fmt(maiorK)} kcal, em ${refNome}). Reduza a porção ou use o botão ⇄ para trocar por um equivalente mais leve.</p>`;
-      } else {
-        let blocos = 0;
-        if (faltaP > 8) {
-          blocos++;
-          html += `<p class="falta">Faltam <b>${fmt(faltaP)} g</b> de proteína. Sugestões:</p><div class="sug-lista">` +
-            SUG_PROT.slice(0, 3).map(id => {
-              const a = alimento(id);
-              const g = gramasParaNutriente(a, faltaP, a.p);
-              return htmlSug(id, g, `+${fmt(a.p * g / 100)} g de proteína`);
-            }).join("") + `</div>`;
-          temBotoes = true;
-        }
-        if (faltaF > 5 && blocos < 2) {
-          blocos++;
-          html += `<p class="falta">Faltam <b>${fmt(faltaF)} g</b> de fibra. Sugestões:</p><div class="sug-lista">` +
-            SUG_FIB.slice(0, 3).map(id => {
-              const a = alimento(id);
-              const g = gramasParaNutriente(a, faltaF, a.fib);
-              return htmlSug(id, g, `+${fmt(a.fib * g / 100)} g de fibra`);
-            }).join("") + `</div>`;
-          temBotoes = true;
-        }
-        if (blocos === 0 && restK > 120) {
-          html += `<p class="falta">Proteína e fibra em dia! Restam <b>${fmt(restK)} kcal</b> para completar com energia:</p><div class="sug-lista">` +
-            SUG_KCAL.slice(0, 3).map(id => {
-              const a = alimento(id);
-              const cap = a.porcoes[a.porcoes.length - 1];
-              const g = Math.max(10, Math.min(Math.round((restK / (a.kcal / 100)) / 5) * 5, cap));
-              return htmlSug(id, g, `+${fmt(a.kcal * g / 100)} kcal`);
-            }).join("") + `</div>`;
-          temBotoes = true;
-        }
-        if (blocos === 0 && restK <= 120) {
-          html += `<p class="fechado">✓ Metas do dia praticamente fechadas. Bom trabalho!</p>`;
-        }
-      }
-
-      if (temBotoes) html += `<p class="nota-sug">Toque numa sugestão para adicioná-la à última refeição da lista.</p>`;
-      box.innerHTML = html;
-
-      box.querySelectorAll(".sug-item").forEach(b => b.addEventListener("click", e => {
-        const food = e.currentTarget.dataset.sugFood;
-        const g = +e.currentTarget.dataset.sugG;
-        if (refeicoes.length === 0) refeicoes.push({ nome: "Refeição 1", itens: [] });
-        refeicoes[refeicoes.length - 1].itens.push({ foodId: food, gramas: g });
-        renderTudo();
-      }));
+    if(blocos === 0 && restK > 120){
+      html += `<p class="falta">Proteína e fibra em dia! Restam <b>${fmt(restK)} kcal</b> para completar com energia:</p><div class="sug-lista">` +
+        SUG_KCAL.slice(0,3).map(id=>{
+          const a = alimento(id);
+          const cap = a.porcoes[a.porcoes.length-1];
+          const g = Math.max(10, Math.min(Math.round((restK/(a.kcal/100))/5)*5, cap));
+          return htmlSug(id, g, `+${fmt(a.kcal*g/100)} kcal`);
+        }).join("") + `</div>`;
+      temBotoes = true;
     }
-
-    /* =================== MODAL =================== */
-    function montaCats() {
-      $("#cats").innerHTML = CATEGORIAS.map(c =>
-        `<button class="cat ${c === catAtiva ? "ativa" : ""}" data-cat="${c}">${c}</button>`).join("");
-      document.querySelectorAll(".cat").forEach(b => b.addEventListener("click", e => {
-        catAtiva = e.currentTarget.dataset.cat;
-        montaCats(); renderLista();
-      }));
+    if(blocos === 0 && restK <= 120){
+      html += `<p class="fechado">✓ Metas do dia praticamente fechadas. Bom trabalho!</p>`;
     }
-    function renderLista() {
-      const q = $("#busca").value.trim().toLowerCase();
-      let lista = ALIMENTOS.filter(a =>
-        (catAtiva === "Todos" || a.cat === catAtiva) &&
-        (!q || a.nome.toLowerCase().includes(q)));
+  }
 
-      if (modoTroca) {
-        const itAtual = refeicoes[modoTroca.ri].itens[modoTroca.ii];
-        lista = lista.filter(a => a.id !== itAtual.foodId);
-        $("#lista-alimentos").innerHTML = lista.length === 0
-          ? `<p class="vazio">Nenhum alimento encontrado.</p>`
-          : lista.map(a => {
-            const g = gramasEquivalentes(itAtual, a), f = g / 100;
-            return `<button class="al-card" data-food="${a.id}">
+  if(temBotoes) html += `<p class="nota-sug">Toque numa sugestão para adicioná-la à última refeição da lista.</p>`;
+  box.innerHTML = html;
+
+  box.querySelectorAll(".sug-item").forEach(b=>b.addEventListener("click", e=>{
+    const food = e.currentTarget.dataset.sugFood;
+    const g = +e.currentTarget.dataset.sugG;
+    if(refeicoes.length === 0) refeicoes.push({nome:"Refeição 1", itens:[]});
+    refeicoes[refeicoes.length-1].itens.push({foodId: food, gramas: g});
+    renderTudo();
+  }));
+}
+
+/* =================== MODAL =================== */
+function montaCats(){
+  $("#cats").innerHTML = CATEGORIAS.map(c=>
+    `<button class="cat ${c===catAtiva?"ativa":""}" data-cat="${c}">${c}</button>`).join("");
+  document.querySelectorAll(".cat").forEach(b=>b.addEventListener("click", e=>{
+    catAtiva = e.currentTarget.dataset.cat;
+    montaCats(); renderLista();
+  }));
+}
+function renderLista(){
+  const q = $("#busca").value.trim().toLowerCase();
+  const filtraCat = a => catAtiva==="Todos" ? true
+    : (catAtiva==="Ricos em fibra" ? a.fib >= LIMIAR_FIBRA : a.cat===catAtiva);
+  // filtro vegetariano só vale na montagem da dieta (não na consulta rápida)
+  const filtraVeg = a => refDestino==="consulta" || !(perfil && perfil.veg) || a.veg !== false;
+  let lista = ALIMENTOS.filter(a=>
+    filtraCat(a) && filtraVeg(a) &&
+    (!q || a.nome.toLowerCase().includes(q)));
+
+  if(modoTroca){
+    const itAtual = refeicoes[modoTroca.ri].itens[modoTroca.ii];
+    lista = lista.filter(a=>a.id!==itAtual.foodId);
+    $("#lista-alimentos").innerHTML = lista.length===0
+      ? `<p class="vazio">Nenhum alimento encontrado.</p>`
+      : lista.map(a=>{
+          const g = gramasEquivalentes(itAtual, a), f = g/100;
+          return `<button class="al-card" data-food="${a.id}">
             <span class="n">${a.nome}</span>
             <span class="m">${a.cat} · ${a.medida}</span>
             <span class="eq"><span class="g-eq">≈ ${fmt(g)} g</span>
-            <span class="m-eq">${fmt(a.kcal * f)} kcal · P ${fmt(a.p * f, 1)} · C ${fmt(a.c * f, 1)} · G ${fmt(a.g * f, 1)}</span></span>
+            <span class="m-eq">${fmt(a.kcal*f)} kcal · P ${fmt(a.p*f,1)} · C ${fmt(a.c*f,1)} · G ${fmt(a.g*f,1)}</span></span>
           </button>`;
-          }).join("");
-      } else {
-        $("#lista-alimentos").innerHTML = lista.length === 0
-          ? `<p class="vazio">Nenhum alimento encontrado para “${q}”.</p>`
-          : lista.map(a => `<button class="al-card" data-food="${a.id}">
+        }).join("");
+  } else {
+    $("#lista-alimentos").innerHTML = lista.length===0
+      ? `<p class="vazio">Nenhum alimento encontrado para “${q}”.</p>`
+      : lista.map(a=>`<button class="al-card" data-food="${a.id}">
           <span class="n">${a.nome}</span>
           <span class="m">${a.cat} · ${a.medida}</span>
-          <span class="k"><b>${fmt(a.kcal)} kcal</b> /100 g<br>P ${fmt(a.p, 1)} · C ${fmt(a.c, 1)} · G ${fmt(a.g, 1)}</span>
+          <span class="k"><b>${fmt(a.kcal)} kcal</b> /100 g<br>P ${fmt(a.p,1)} · C ${fmt(a.c,1)} · G ${fmt(a.g,1)}</span>
         </button>`).join("");
-      }
+  }
 
-      document.querySelectorAll(".al-card").forEach(b => b.addEventListener("click", e => {
-        const id = e.currentTarget.dataset.food;
-        if (modoTroca) substituirAlimento(id);
-        else selecionaAlimento(id);
-      }));
-    }
+  document.querySelectorAll(".al-card").forEach(b=>b.addEventListener("click", e=>{
+    const id = e.currentTarget.dataset.food;
+    if(modoTroca) substituirAlimento(id);
+    else selecionaAlimento(id);
+  }));
+}
 
-    /* Equivalência: proteínas se igualam pela proteína; demais, pelas calorias */
-    function gramasEquivalentes(itemAtual, alvo) {
-      const a = alimento(itemAtual.foodId);
-      let g;
-      if (a.cat === "Proteínas" && alvo.p > 0) g = (a.p * itemAtual.gramas) / alvo.p;
-      else if (alvo.kcal > 0) g = (a.kcal * itemAtual.gramas) / alvo.kcal;
-      else g = itemAtual.gramas;
-      return Math.max(5, Math.min(1000, Math.round(g / 5) * 5));
-    }
+/* Equivalência: proteínas se igualam pela proteína; demais, pelas calorias */
+function gramasEquivalentes(itemAtual, alvo){
+  const a = alimento(itemAtual.foodId);
+  let g;
+  if(a.cat === "Proteínas" && alvo.p > 0) g = (a.p * itemAtual.gramas) / alvo.p;
+  else if(alvo.kcal > 0) g = (a.kcal * itemAtual.gramas) / alvo.kcal;
+  else g = itemAtual.gramas;
+  return Math.max(5, Math.min(1000, Math.round(g/5)*5));
+}
 
-    function abrirTroca(ri, ii) {
-      modoTroca = { ri, ii };
-      const it = refeicoes[ri].itens[ii];
-      const a = alimento(it.foodId);
-      $("#modal-titulo").textContent = `Substituir: ${fmt(it.gramas)} g de ${a.nome}`;
-      $("#qtd-painel").classList.remove("aberto");
-      $("#busca").value = "";
-      catAtiva = a.cat; // começa na mesma categoria (equivalentes mais coerentes)
-      montaCats(); renderLista();
-      $("#modal-fundo").classList.add("aberto");
-      document.body.style.overflow = "hidden";
-    }
+function abrirTroca(ri, ii){
+  modoTroca = {ri, ii};
+  refDestino = null;
+  const it = refeicoes[ri].itens[ii];
+  const a = alimento(it.foodId);
+  $("#modal-titulo").textContent = `Substituir: ${fmt(it.gramas)} g de ${a.nome}`;
+  $("#qtd-painel").classList.remove("aberto");
+  $("#busca").value = "";
+  catAtiva = a.cat; // começa na mesma categoria (equivalentes mais coerentes)
+  montaCats(); renderLista();
+  $("#modal-fundo").classList.add("aberto");
+  document.body.style.overflow = "hidden";
+}
 
-    function substituirAlimento(novoId) {
-      const it = refeicoes[modoTroca.ri].itens[modoTroca.ii];
-      const g = gramasEquivalentes(it, alimento(novoId));
-      refeicoes[modoTroca.ri].itens[modoTroca.ii] = { foodId: novoId, gramas: g };
-      fecharModal();
-      renderTudo();
-    }
-    function selecionaAlimento(id) {
-      alimentoSel = alimento(id);
-      $("#qtd-painel").classList.add("aberto");
-      $("#sel-nome").textContent = alimentoSel.nome;
-      $("#sel-medida").textContent = `Referência: ${alimentoSel.medida}`;
-      $("#porcoes").innerHTML = alimentoSel.porcoes.map(g =>
-        `<button class="porcao" data-g="${g}">${g} g</button>`).join("");
-      document.querySelectorAll(".porcao").forEach(b => b.addEventListener("click", e => {
-        $("#in-qtd").value = e.currentTarget.dataset.g; atualizaPrevia();
-      }));
-      $("#in-qtd").value = alimentoSel.porcoes[0] || 100;
-      atualizaPrevia();
-      $("#in-qtd").focus();
-    }
-    function atualizaPrevia() {
-      if (!alimentoSel) return;
-      const g = parseFloat($("#in-qtd").value) || 0, f = g / 100;
-      $("#previa").innerHTML = `${fmt(g)} g → <b>${fmt(alimentoSel.kcal * f)} kcal</b> · proteína ${fmt(alimentoSel.p * f, 1)} g · carbo ${fmt(alimentoSel.c * f, 1)} g · gordura ${fmt(alimentoSel.g * f, 1)} g · fibra ${fmt(alimentoSel.fib * f, 1)} g`;
-    }
-    $("#in-qtd").addEventListener("input", atualizaPrevia);
-    $("#busca").addEventListener("input", renderLista);
+function substituirAlimento(novoId){
+  const it = refeicoes[modoTroca.ri].itens[modoTroca.ii];
+  const g = gramasEquivalentes(it, alimento(novoId));
+  refeicoes[modoTroca.ri].itens[modoTroca.ii] = {foodId: novoId, gramas: g};
+  fecharModal();
+  renderTudo();
+}
+function selecionaAlimento(id){
+  alimentoSel = alimento(id);
+  $("#qtd-painel").classList.add("aberto");
+  $("#sel-nome").textContent = alimentoSel.nome;
+  $("#sel-medida").textContent = `Referência: ${alimentoSel.medida}`;
+  $("#porcoes").innerHTML = alimentoSel.porcoes.map(g=>
+    `<button class="porcao" data-g="${g}">${g} g</button>`).join("");
+  document.querySelectorAll(".porcao").forEach(b=>b.addEventListener("click", e=>{
+    $("#in-qtd").value = e.currentTarget.dataset.g; atualizaPrevia();
+  }));
+  $("#in-qtd").value = alimentoSel.porcoes[0] || 100;
+  atualizaPrevia();
+  $("#in-qtd").focus();
+}
+function atualizaPrevia(){
+  if(!alimentoSel) return;
+  const g = parseFloat($("#in-qtd").value)||0, f=g/100;
+  $("#previa").innerHTML = `${fmt(g)} g → <b>${fmt(alimentoSel.kcal*f)} kcal</b> · proteína ${fmt(alimentoSel.p*f,1)} g · carbo ${fmt(alimentoSel.c*f,1)} g · gordura ${fmt(alimentoSel.g*f,1)} g · fibra ${fmt(alimentoSel.fib*f,1)} g`;
+}
+$("#in-qtd").addEventListener("input", atualizaPrevia);
+$("#busca").addEventListener("input", renderLista);
 
-    function abrirModal(ri) {
-      refDestino = ri;
-      alimentoSel = null;
-      modoTroca = null;
-      $("#modal-titulo").textContent = `Adicionar em: ${refeicoes[ri].nome}`;
-      $("#qtd-painel").classList.remove("aberto");
-      $("#busca").value = "";
-      catAtiva = "Todos";
-      montaCats(); renderLista();
-      $("#modal-fundo").classList.add("aberto");
-      document.body.style.overflow = "hidden";
-      $("#busca").focus();
-    }
-    function fecharModal() {
-      $("#modal-fundo").classList.remove("aberto");
-      document.body.style.overflow = "";
-      modoTroca = null;
-    }
-    $("#modal-fechar").addEventListener("click", fecharModal);
-    $("#modal-fundo").addEventListener("click", e => { if (e.target.id === "modal-fundo") fecharModal(); });
-    document.addEventListener("keydown", e => { if (e.key === "Escape") fecharModal(); });
+function abrirModal(ri){
+  refDestino = ri;
+  alimentoSel = null;
+  modoTroca = null;
+  $("#modal-titulo").textContent = ri==="consulta"
+    ? "Consulta rápida — adicionar alimento"
+    : `Adicionar em: ${refeicoes[ri].nome}`;
+  $("#qtd-painel").classList.remove("aberto");
+  $("#busca").value = "";
+  catAtiva = "Todos";
+  montaCats(); renderLista();
+  $("#modal-fundo").classList.add("aberto");
+  document.body.style.overflow = "hidden";
+  $("#busca").focus();
+}
+function fecharModal(){
+  $("#modal-fundo").classList.remove("aberto");
+  document.body.style.overflow = "";
+  modoTroca = null;
+}
+$("#modal-fechar").addEventListener("click", fecharModal);
+$("#modal-fundo").addEventListener("click", e=>{ if(e.target.id==="modal-fundo") fecharModal(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") fecharModal(); });
 
-    $("#btn-confirma-add").addEventListener("click", () => {
-      const g = parseFloat($("#in-qtd").value);
-      if (!alimentoSel || !g || g < 1) { alert("Informe a quantidade em gramas."); return; }
-      refeicoes[refDestino].itens.push({ foodId: alimentoSel.id, gramas: g });
-      fecharModal();
-      renderTudo();
+$("#btn-confirma-add").addEventListener("click", ()=>{
+  const g = parseFloat($("#in-qtd").value);
+  if(!alimentoSel || !g || g<1){ alert("Informe a quantidade em gramas."); return; }
+  if(refDestino === "consulta"){
+    consultaItens.push({foodId: alimentoSel.id, gramas: g});
+    fecharModal();
+    renderConsulta();
+    return;
+  }
+  refeicoes[refDestino].itens.push({foodId: alimentoSel.id, gramas: g});
+  fecharModal();
+  renderTudo();
+});
+
+/* =================== CONSULTA RÁPIDA =================== */
+function mostrarConsulta(){
+  viewAnterior = $("#etapa2").style.display === "block" ? "etapa2" : "etapa1";
+  $("#etapa1").style.display = "none";
+  $("#etapa2").style.display = "none";
+  $("#consulta").style.display = "block";
+  emConsulta = true;
+  $("#btn-consulta").textContent = "← Voltar";
+  renderConsulta();
+  window.scrollTo({top:0});
+}
+function sairConsulta(){
+  $("#consulta").style.display = "none";
+  $(viewAnterior === "etapa2" ? "#etapa2" : "#etapa1").style.display = "block";
+  emConsulta = false;
+  $("#btn-consulta").textContent = "🔍 Consulta rápida";
+  window.scrollTo({top:0});
+}
+$("#btn-consulta").addEventListener("click", ()=> emConsulta ? sairConsulta() : mostrarConsulta());
+
+function totalConsulta(){
+  return consultaItens.reduce((t,it)=>{const n=nutri(it); t.kcal+=n.kcal;t.p+=n.p;t.c+=n.c;t.g+=n.g;t.fib+=n.fib;return t;},{kcal:0,p:0,c:0,g:0,fib:0});
+}
+
+function renderConsulta(){
+  const t = totalConsulta();
+  $("#consulta-tot").innerHTML = `
+    <div class="stat"><span class="v">${fmt(t.kcal)}</span><span class="l">kcal</span></div>
+    <div class="stat"><span class="v">${fmt(t.p,1)} g</span><span class="l">proteínas</span></div>
+    <div class="stat"><span class="v">${fmt(t.c,1)} g</span><span class="l">carboidratos</span></div>
+    <div class="stat"><span class="v">${fmt(t.g,1)} g</span><span class="l">gorduras</span></div>
+    <div class="stat"><span class="v">${fmt(t.fib,1)} g</span><span class="l">fibras</span></div>`;
+
+  const ul = $("#consulta-itens");
+  ul.innerHTML = consultaItens.length === 0
+    ? `<li class="vazio">Nenhum alimento ainda. Toque em “Adicionar alimento” para consultar valores.</li>`
+    : consultaItens.map((it, ii)=>{
+        const a = alimento(it.foodId), n = nutri(it);
+        return `<li class="item" style="grid-template-columns:1fr 96px auto auto">
+          <div><span class="al-nome">${a.nome}</span><span class="al-medida">${a.medida}</span></div>
+          <input class="qtd" type="number" min="1" max="2000" step="1" value="${it.gramas}"
+                 aria-label="Quantidade em gramas de ${a.nome}" data-cons="${ii}">
+          <div class="macros"><b>${fmt(n.kcal)} kcal</b><br>P ${fmt(n.p,1)} · C ${fmt(n.c,1)} · G ${fmt(n.g,1)} · Fib ${fmt(n.fib,1)}</div>
+          <button class="btn-x" data-cons-rem="${ii}" aria-label="Remover ${a.nome}">✕</button>
+        </li>`;
+      }).join("");
+
+  ul.querySelectorAll(".qtd").forEach(inp=>{
+    inp.addEventListener("input", e=>{
+      const g = parseFloat(e.target.value);
+      if(!g || g<1) return;
+      consultaItens[+e.target.dataset.cons].gramas = g;
+      // atualiza só os números, sem perder o foco do input
+      const t2 = totalConsulta();
+      $("#consulta-tot").children[0].querySelector(".v").textContent = fmt(t2.kcal);
+      $("#consulta-tot").children[1].querySelector(".v").textContent = fmt(t2.p,1)+" g";
+      $("#consulta-tot").children[2].querySelector(".v").textContent = fmt(t2.c,1)+" g";
+      $("#consulta-tot").children[3].querySelector(".v").textContent = fmt(t2.g,1)+" g";
+      $("#consulta-tot").children[4].querySelector(".v").textContent = fmt(t2.fib,1)+" g";
+      const n = nutri(consultaItens[+e.target.dataset.cons]);
+      const m = e.target.closest(".item").querySelector(".macros");
+      if(m) m.innerHTML = `<b>${fmt(n.kcal)} kcal</b><br>P ${fmt(n.p,1)} · C ${fmt(n.c,1)} · G ${fmt(n.g,1)} · Fib ${fmt(n.fib,1)}`;
     });
+  });
+  ul.querySelectorAll("[data-cons-rem]").forEach(b=>b.addEventListener("click", e=>{
+    consultaItens.splice(+e.currentTarget.dataset.consRem, 1);
+    renderConsulta();
+  }));
+}
+$("#btn-consulta-add").addEventListener("click", ()=> abrirModal("consulta"));
+$("#btn-consulta-limpar").addEventListener("click", ()=>{
+  if(consultaItens.length===0 || confirm("Limpar a lista de consulta?")){
+    consultaItens = []; renderConsulta();
+  }
+});
 
-    /* =================== IMPRESSÃO =================== */
-    function statusMeta(val, meta, atingirBom) {
-      const p = meta ? val / meta : 0;
-      if (p > 1.12) return `<span class="f-status-acima">acima da meta</span>`;
-      if (p >= 0.9) return `<span class="f-status-ok">dentro da meta</span>`;
-      return `<span class="f-status-falta">abaixo da meta</span>`;
-    }
-    function montarFolha() {
-      const o = OBJETIVOS.find(x => x.id === perfil.objetivoId);
-      const t = totalDia();
-      const hoje = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
-      const imc = perfil.peso / Math.pow(perfil.altura / 100, 2);
+/* =================== IMPRESSÃO =================== */
+function statusMeta(val, meta, atingirBom){
+  const p = meta ? val/meta : 0;
+  if(p > 1.12) return `<span class="f-status-acima">acima da meta</span>`;
+  if(p >= 0.9) return `<span class="f-status-ok">dentro da meta</span>`;
+  return `<span class="f-status-falta">abaixo da meta</span>`;
+}
+function montarFolha(){
+  const o = OBJETIVOS.find(x=>x.id===perfil.objetivoId);
+  const t = totalDia();
+  const hoje = new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+  const imc = perfil.peso / Math.pow(perfil.altura/100,2);
 
-      let linhas = "";
-      refeicoes.forEach(r => {
-        if (r.itens.length === 0) return;
-        linhas += `<tr><td class="f-ref-nome" colspan="7">${r.nome}</td></tr>`;
-        r.itens.forEach(it => {
-          const a = alimento(it.foodId), n = nutri(it);
-          linhas += `<tr>
+  let linhas = "";
+  refeicoes.forEach(r=>{
+    if(r.itens.length===0) return;
+    linhas += `<tr><td class="f-ref-nome" colspan="7">${r.nome}</td></tr>`;
+    r.itens.forEach(it=>{
+      const a = alimento(it.foodId), n = nutri(it);
+      linhas += `<tr>
         <td>${a.nome}</td>
         <td class="num">${fmt(it.gramas)} g</td>
         <td class="num">${fmt(n.kcal)}</td>
-        <td class="num">${fmt(n.p, 1)}</td>
-        <td class="num">${fmt(n.c, 1)}</td>
-        <td class="num">${fmt(n.g, 1)}</td>
-        <td class="num">${fmt(n.fib, 1)}</td>
+        <td class="num">${fmt(n.p,1)}</td>
+        <td class="num">${fmt(n.c,1)}</td>
+        <td class="num">${fmt(n.g,1)}</td>
+        <td class="num">${fmt(n.fib,1)}</td>
       </tr>`;
-        });
-        const s = totalRef(r);
-        linhas += `<tr class="f-sub"><td>Subtotal — ${r.nome}</td><td></td>
-      <td class="num">${fmt(s.kcal)}</td><td class="num">${fmt(s.p, 1)}</td>
-      <td class="num">${fmt(s.c, 1)}</td><td class="num">${fmt(s.g, 1)}</td><td class="num">${fmt(s.fib, 1)}</td></tr>`;
-      });
+    });
+    const s = totalRef(r);
+    linhas += `<tr class="f-sub"><td>Subtotal — ${r.nome}</td><td></td>
+      <td class="num">${fmt(s.kcal)}</td><td class="num">${fmt(s.p,1)}</td>
+      <td class="num">${fmt(s.c,1)}</td><td class="num">${fmt(s.g,1)}</td><td class="num">${fmt(s.fib,1)}</td></tr>`;
+  });
 
-      $("#folha").innerHTML = `
+  $("#folha").innerHTML = `
     <div class="f-cab">
       <div>
         <div class="f-logo">🌱 NutriPlano — Planilha alimentar</div>
         <div class="f-perfil" style="margin-top:6px">
           ${perfil.nome ? `<span>Nome: <b>${perfil.nome}</b></span>` : ""}
-          <span>Peso: <b>${fmt(perfil.peso, 1)} kg</b></span>
+          <span>Peso: <b>${fmt(perfil.peso,1)} kg</b></span>
           <span>Altura: <b>${fmt(perfil.altura)} cm</b></span>
           ${perfil.idade ? `<span>Idade: <b>${perfil.idade}</b></span>` : ""}
-          <span>IMC: <b>${fmt(imc, 1)}</b></span>
-          ${perfil.meta ? `<span>Peso desejado: <b>${fmt(perfil.meta, 1)} kg</b></span>` : ""}
+          <span>IMC: <b>${fmt(imc,1)}</b></span>
+          ${perfil.meta ? `<span>Peso desejado: <b>${fmt(perfil.meta,1)} kg</b></span>` : ""}
           <span>Objetivo: <b>${o.nome}</b></span>
-          <span>Método: <b>${perfil.metodo === "cientifico" ? "Mifflin-St Jeor + atividade" : "fórmulas rápidas (peso × fator)"}</b></span>
+          <span>Método: <b>${perfil.metodo==="cientifico" ? "Mifflin-St Jeor + atividade" : "fórmulas rápidas (peso × fator)"}</b></span>
           ${metas.base ? `<span>Gasto diário estimado: <b>${fmt(metas.base.tdee)} kcal</b></span>` : ""}
         </div>
       </div>
@@ -2196,23 +1239,22 @@
       <tr><th>Alimento</th><th class="num">Qtd.</th><th class="num">kcal</th><th class="num">Prot. (g)</th><th class="num">Carb. (g)</th><th class="num">Gord. (g)</th><th class="num">Fibra (g)</th></tr>
       ${linhas || `<tr><td colspan="7">Nenhum alimento adicionado.</td></tr>`}
       <tr class="f-total"><td>TOTAL DO DIA</td><td></td>
-        <td class="num">${fmt(t.kcal)}</td><td class="num">${fmt(t.p, 1)}</td>
-        <td class="num">${fmt(t.c, 1)}</td><td class="num">${fmt(t.g, 1)}</td><td class="num">${fmt(t.fib, 1)}</td></tr>
+        <td class="num">${fmt(t.kcal)}</td><td class="num">${fmt(t.p,1)}</td>
+        <td class="num">${fmt(t.c,1)}</td><td class="num">${fmt(t.g,1)}</td><td class="num">${fmt(t.fib,1)}</td></tr>
     </table>
 
     <p class="f-nota">Valores nutricionais por 100 g de alimento pronto para consumo (referência: Tabela TACO e rótulos médios). As metas foram calculadas por fórmulas práticas de estimativa a partir do peso e do objetivo informados. Este material é educativo e não substitui a avaliação de um(a) nutricionista ou médico(a).</p>`;
-    }
-    function imprimir() {
-      if (totalDia().kcal === 0 && !confirm("Sua dieta ainda está vazia. Imprimir mesmo assim?")) return;
-      montarFolha();
-      window.print();
-    }
-    $("#btn-imprimir").addEventListener("click", imprimir);
-    $("#btn-imprimir-topo").addEventListener("click", imprimir);
+}
+function imprimir(){
+  if(totalDia().kcal===0 && !confirm("Sua dieta ainda está vazia. Imprimir mesmo assim?")) return;
+  montarFolha();
+  window.print();
+}
+$("#btn-imprimir").addEventListener("click", imprimir);
+$("#btn-imprimir-topo").addEventListener("click", imprimir);
 
-    /* =================== INÍCIO =================== */
-    montaObjetivos();
-  </script>
+/* =================== INÍCIO =================== */
+montaObjetivos();
+</script>
 </body>
-
 </html>
