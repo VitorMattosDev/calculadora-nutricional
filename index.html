@@ -117,6 +117,8 @@ input,select{font-family:var(--body)}
 .item .al-medida{display:block;font-weight:400;font-size:.76rem;color:var(--ink-soft)}
 .item input.qtd{width:100%;border:1.5px solid var(--linha);border-radius:8px;padding:7px 8px;font-family:var(--mono);font-size:.88rem;text-align:right}
 .item input.qtd:focus{border-color:var(--verde);outline:none}
+.qtd-wrap{display:flex;flex-direction:column;gap:3px;min-width:0}
+.qtd-wrap .qtd-un{font-family:var(--mono);font-size:.66rem;color:var(--ink-soft);text-align:right}
 .item .macros{font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);text-align:right;line-height:1.5;white-space:nowrap}
 .item .macros b{color:var(--ink);font-size:.85rem}
 .vazio{padding:18px;color:var(--ink-soft);font-size:.88rem;text-align:center}
@@ -444,7 +446,7 @@ input,select{font-family:var(--body)}
       <div class="porcoes" id="porcoes"></div>
       <div class="qtd-linha">
         <input id="in-qtd" type="number" inputmode="decimal" min="1" max="2000" step="1" value="100">
-        <span class="un">gramas</span>
+        <span class="un" id="in-qtd-un">gramas</span>
       </div>
       <p class="previa" id="previa"></p>
       <button class="btn btn-verde" id="btn-confirma-add">Adicionar à refeição</button>
@@ -467,8 +469,8 @@ const ALIMENTOS = [
  {id:"mandioca", nome:"Mandioca (aipim) cozida", cat:"Carboidratos", kcal:125, p:0.6, c:30.1, g:0.3, fib:1.6, medida:"1 pedaço médio ≈ 100 g", porcoes:[100,150,200]},
  {id:"macarrao", nome:"Macarrão cozido", cat:"Carboidratos", kcal:138, p:4.5, c:28.0, g:0.6, fib:1.5, medida:"1 pegador ≈ 110 g", porcoes:[110,160,220]},
  {id:"aveia", nome:"Aveia em flocos", cat:"Carboidratos", kcal:394, p:13.9, c:66.6, g:8.5, fib:9.1, medida:"1 colher de sopa ≈ 15 g", porcoes:[30,45,60]},
- {id:"pao-frances", nome:"Pão francês", cat:"Carboidratos", kcal:300, p:8.0, c:58.6, g:3.1, fib:2.3, medida:"1 unidade ≈ 50 g", porcoes:[50,100]},
- {id:"pao-integral", nome:"Pão de forma integral", cat:"Carboidratos", kcal:253, p:9.4, c:49.9, g:3.5, fib:6.9, medida:"1 fatia ≈ 25 g", porcoes:[25,50,75]},
+ {id:"pao-frances", nome:"Pão francês", cat:"Carboidratos", kcal:300, p:8.0, c:58.6, g:3.1, fib:2.3, medida:"1 unidade ≈ 50 g", porcoes:[50,100], un:{g:50, nome:"unidade"}},
+ {id:"pao-integral", nome:"Pão de forma integral", cat:"Carboidratos", kcal:253, p:9.4, c:49.9, g:3.5, fib:6.9, medida:"1 fatia ≈ 25 g", porcoes:[25,50,75], un:{g:25, nome:"fatia"}},
  {id:"tapioca", nome:"Tapioca (goma hidratada)", cat:"Carboidratos", kcal:240, p:0.0, c:60.0, g:0.0, fib:0.4, medida:"1 tapioca média ≈ 60 g de goma", porcoes:[40,60,80]},
  {id:"cuscuz", nome:"Cuscuz de milho cozido", cat:"Carboidratos", kcal:113, p:2.2, c:25.3, g:0.7, fib:2.1, medida:"1 fatia média ≈ 120 g", porcoes:[100,150,200]},
 
@@ -479,12 +481,15 @@ const ALIMENTOS = [
  {id:"carne-moida", nome:"Carne moída refogada (acém)", cat:"Proteínas", kcal:212, p:26.7, c:0.0, g:11.0, fib:0, medida:"3 colheres de sopa ≈ 90 g", porcoes:[90,120,150], veg:false},
  {id:"tilapia", nome:"Tilápia grelhada", cat:"Proteínas", kcal:128, p:26.0, c:0.0, g:2.5, fib:0, medida:"1 filé médio ≈ 120 g", porcoes:[120,180], veg:false},
  {id:"salmao", nome:"Salmão grelhado", cat:"Proteínas", kcal:230, p:26.1, c:0.0, g:14.0, fib:0, medida:"1 posta média ≈ 130 g", porcoes:[100,130,180], veg:false},
- {id:"atum-lata", nome:"Atum em lata (em água)", cat:"Proteínas", kcal:109, p:26.0, c:0.0, g:1.0, fib:0, medida:"1 lata drenada ≈ 120 g", porcoes:[60,120], veg:false},
- {id:"ovo", nome:"Ovo de galinha cozido", cat:"Proteínas", kcal:146, p:13.3, c:0.6, g:9.5, fib:0, medida:"1 unidade ≈ 50 g", porcoes:[50,100,150]},
- {id:"whey", nome:"Whey protein (pó)", cat:"Proteínas", kcal:400, p:80.0, c:8.0, g:6.0, fib:0, medida:"1 dose (scoop) ≈ 30 g", porcoes:[30,60]},
+ {id:"atum-lata", nome:"Atum em lata (em água)", cat:"Proteínas", kcal:109, p:26.0, c:0.0, g:1.0, fib:0, medida:"1 lata drenada ≈ 120 g", porcoes:[60,120], veg:false, un:{g:120, nome:"lata"}},
+ {id:"ovo", nome:"Ovo de galinha cozido", cat:"Proteínas", kcal:146, p:13.3, c:0.6, g:9.5, fib:0, medida:"1 unidade ≈ 50 g", porcoes:[50,100,150], un:{g:50, nome:"unidade"}},
+ {id:"whey", nome:"Whey protein (pó)", cat:"Proteínas", kcal:400, p:80.0, c:8.0, g:6.0, fib:0, medida:"1 dose (scoop) ≈ 30 g", porcoes:[30,60], un:{g:30, nome:"dose"}},
  {id:"carne-porco-lombo", nome:"Lombo de porco assado", cat:"Proteínas", kcal:210, p:32.1, c:0.0, g:8.2, fib:0, medida:"1 fatia média ≈ 100 g", porcoes:[100,150], veg:false},
  {id:"tofu", nome:"Tofu firme", cat:"Proteínas", kcal:76, p:8.0, c:1.9, g:4.8, fib:0.3, medida:"1 fatia média ≈ 100 g", porcoes:[100,150,200]},
  {id:"pts-soja", nome:"Proteína texturizada de soja (seca)", cat:"Proteínas", kcal:336, p:51.0, c:32.0, g:1.2, fib:17.5, medida:"3 colheres de sopa ≈ 30 g (peso seco)", porcoes:[30,50,80]},
+ {id:"clara-ovo", nome:"Clara de ovo cozida", cat:"Proteínas", kcal:52, p:10.9, c:0.7, g:0.2, fib:0, medida:"1 clara ≈ 33 g", porcoes:[33,66,99], un:{g:33, nome:"unidade"}},
+ {id:"seitan", nome:"Seitan (glúten de trigo) cozido", cat:"Proteínas", kcal:140, p:25.0, c:3.5, g:2.0, fib:0.6, medida:"1 porção média ≈ 100 g", porcoes:[100,150,200]},
+ {id:"tempeh", nome:"Tempeh", cat:"Proteínas", kcal:192, p:20.3, c:7.6, g:10.8, fib:4.8, medida:"1 fatia média ≈ 100 g", porcoes:[100,150,200]},
 
  // Leguminosas
  {id:"feijao-carioca", nome:"Feijão carioca cozido", cat:"Leguminosas", kcal:76, p:4.8, c:13.6, g:0.5, fib:8.5, medida:"1 concha média ≈ 85 g", porcoes:[85,140,170]},
@@ -493,12 +498,13 @@ const ALIMENTOS = [
  {id:"grao-bico", nome:"Grão-de-bico cozido", cat:"Leguminosas", kcal:130, p:8.9, c:21.2, g:2.1, fib:7.6, medida:"3 colheres de sopa ≈ 75 g", porcoes:[75,120,150]},
  {id:"soja-cozida", nome:"Soja em grãos cozida", cat:"Leguminosas", kcal:172, p:16.6, c:8.7, g:9.0, fib:6.0, medida:"1 concha média ≈ 85 g", porcoes:[85,140]},
  {id:"ervilha", nome:"Ervilha cozida", cat:"Leguminosas", kcal:88, p:5.4, c:15.6, g:0.4, fib:5.0, medida:"3 colheres de sopa ≈ 75 g", porcoes:[75,120]},
+ {id:"edamame", nome:"Edamame (soja verde) cozido", cat:"Leguminosas", kcal:121, p:11.9, c:8.9, g:5.2, fib:5.2, medida:"1 xícara de grãos ≈ 90 g", porcoes:[90,180]},
 
  // Frutas
- {id:"banana", nome:"Banana prata", cat:"Frutas", kcal:98, p:1.3, c:26.0, g:0.1, fib:2.0, medida:"1 unidade ≈ 70 g", porcoes:[70,140]},
- {id:"maca", nome:"Maçã com casca", cat:"Frutas", kcal:56, p:0.3, c:15.2, g:0.0, fib:1.3, medida:"1 unidade ≈ 130 g", porcoes:[130,260]},
- {id:"laranja", nome:"Laranja pera", cat:"Frutas", kcal:45, p:1.0, c:11.5, g:0.1, fib:1.1, medida:"1 unidade ≈ 140 g", porcoes:[140,280]},
- {id:"mamao", nome:"Mamão papaia", cat:"Frutas", kcal:40, p:0.5, c:10.4, g:0.1, fib:1.8, medida:"1/2 unidade ≈ 150 g", porcoes:[150,300]},
+ {id:"banana", nome:"Banana prata", cat:"Frutas", kcal:98, p:1.3, c:26.0, g:0.1, fib:2.0, medida:"1 unidade ≈ 70 g", porcoes:[70,140], un:{g:70, nome:"unidade"}},
+ {id:"maca", nome:"Maçã com casca", cat:"Frutas", kcal:56, p:0.3, c:15.2, g:0.0, fib:1.3, medida:"1 unidade ≈ 130 g", porcoes:[130,260], un:{g:130, nome:"unidade"}},
+ {id:"laranja", nome:"Laranja pera", cat:"Frutas", kcal:45, p:1.0, c:11.5, g:0.1, fib:1.1, medida:"1 unidade ≈ 140 g", porcoes:[140,280], un:{g:140, nome:"unidade"}},
+ {id:"mamao", nome:"Mamão papaia", cat:"Frutas", kcal:40, p:0.5, c:10.4, g:0.1, fib:1.8, medida:"1/2 unidade ≈ 150 g", porcoes:[150,300], un:{g:300, nome:"unidade"}},
  {id:"abacate", nome:"Abacate", cat:"Frutas", kcal:96, p:1.2, c:6.0, g:8.4, fib:6.3, medida:"2 colheres de sopa ≈ 60 g", porcoes:[60,100]},
  {id:"morango", nome:"Morango", cat:"Frutas", kcal:30, p:0.9, c:6.8, g:0.3, fib:1.7, medida:"1 xícara ≈ 140 g", porcoes:[100,140]},
  {id:"manga", nome:"Manga palmer", cat:"Frutas", kcal:72, p:0.4, c:19.4, g:0.2, fib:1.6, medida:"1 fatia grossa ≈ 100 g", porcoes:[100,150]},
@@ -513,13 +519,16 @@ const ALIMENTOS = [
  {id:"pepino", nome:"Pepino", cat:"Vegetais", kcal:10, p:0.9, c:2.0, g:0.0, fib:1.1, medida:"1/2 unidade ≈ 100 g", porcoes:[100,150]},
 
  // Laticínios
- {id:"leite-integral", nome:"Leite integral", cat:"Laticínios", kcal:61, p:3.2, c:4.6, g:3.3, fib:0, medida:"1 copo ≈ 200 ml (200 g)", porcoes:[200,300]},
- {id:"leite-desnatado", nome:"Leite desnatado", cat:"Laticínios", kcal:36, p:3.4, c:4.9, g:0.2, fib:0, medida:"1 copo ≈ 200 ml (200 g)", porcoes:[200,300]},
- {id:"iogurte-natural", nome:"Iogurte natural integral", cat:"Laticínios", kcal:51, p:4.1, c:1.9, g:3.0, fib:0, medida:"1 pote ≈ 170 g", porcoes:[170,340]},
- {id:"iogurte-desnatado", nome:"Iogurte natural desnatado", cat:"Laticínios", kcal:41, p:4.3, c:5.8, g:0.2, fib:0, medida:"1 pote ≈ 170 g", porcoes:[170,340]},
- {id:"queijo-minas", nome:"Queijo minas frescal", cat:"Laticínios", kcal:264, p:17.4, c:3.2, g:20.2, fib:0, medida:"1 fatia média ≈ 30 g", porcoes:[30,60]},
- {id:"mucarela", nome:"Queijo muçarela", cat:"Laticínios", kcal:330, p:22.6, c:3.0, g:25.2, fib:0, medida:"1 fatia ≈ 20 g", porcoes:[20,40,60]},
+ {id:"leite-integral", nome:"Leite integral", cat:"Laticínios", kcal:61, p:3.2, c:4.6, g:3.3, fib:0, medida:"1 copo ≈ 200 ml (200 g)", porcoes:[200,300], un:{g:200, nome:"copo"}},
+ {id:"leite-desnatado", nome:"Leite desnatado", cat:"Laticínios", kcal:36, p:3.4, c:4.9, g:0.2, fib:0, medida:"1 copo ≈ 200 ml (200 g)", porcoes:[200,300], un:{g:200, nome:"copo"}},
+ {id:"iogurte-natural", nome:"Iogurte natural integral", cat:"Laticínios", kcal:51, p:4.1, c:1.9, g:3.0, fib:0, medida:"1 pote ≈ 170 g", porcoes:[170,340], un:{g:170, nome:"pote"}},
+ {id:"iogurte-desnatado", nome:"Iogurte natural desnatado", cat:"Laticínios", kcal:41, p:4.3, c:5.8, g:0.2, fib:0, medida:"1 pote ≈ 170 g", porcoes:[170,340], un:{g:170, nome:"pote"}},
+ {id:"queijo-minas", nome:"Queijo minas frescal", cat:"Laticínios", kcal:264, p:17.4, c:3.2, g:20.2, fib:0, medida:"1 fatia média ≈ 30 g", porcoes:[30,60], un:{g:30, nome:"fatia"}},
+ {id:"mucarela", nome:"Queijo muçarela", cat:"Laticínios", kcal:330, p:22.6, c:3.0, g:25.2, fib:0, medida:"1 fatia ≈ 20 g", porcoes:[20,40,60], un:{g:20, nome:"fatia"}},
  {id:"requeijao", nome:"Requeijão cremoso", cat:"Laticínios", kcal:257, p:9.6, c:2.4, g:23.4, fib:0, medida:"1 colher de sopa ≈ 30 g", porcoes:[15,30]},
+ {id:"cottage", nome:"Queijo cottage", cat:"Laticínios", kcal:98, p:11.1, c:3.4, g:4.3, fib:0, medida:"2 colheres de sopa ≈ 60 g", porcoes:[60,120,180]},
+ {id:"ricota", nome:"Ricota fresca", cat:"Laticínios", kcal:140, p:12.6, c:3.8, g:8.1, fib:0, medida:"1 fatia média ≈ 50 g", porcoes:[50,100,150], un:{g:50, nome:"fatia"}},
+ {id:"iogurte-proteico", nome:"Iogurte proteico (tipo grego/skyr)", cat:"Laticínios", kcal:60, p:10.0, c:4.5, g:0.4, fib:0, medida:"1 pote ≈ 140 g", porcoes:[140,280], un:{g:140, nome:"pote"}},
 
  // Gorduras & sementes
  {id:"azeite", nome:"Azeite de oliva", cat:"Gorduras e sementes", kcal:884, p:0.0, c:0.0, g:100.0, fib:0, medida:"1 colher de sopa ≈ 13 g", porcoes:[5,13,26]},
@@ -527,14 +536,31 @@ const ALIMENTOS = [
  {id:"amendoim", nome:"Amendoim torrado", cat:"Gorduras e sementes", kcal:606, p:22.5, c:18.7, g:49.6, fib:7.8, medida:"1 punhado ≈ 30 g", porcoes:[15,30]},
  {id:"pasta-amendoim", nome:"Pasta de amendoim integral", cat:"Gorduras e sementes", kcal:590, p:25.0, c:20.0, g:47.0, fib:6.0, medida:"1 colher de sopa ≈ 15 g", porcoes:[15,30]},
  {id:"castanha-caju", nome:"Castanha-de-caju torrada", cat:"Gorduras e sementes", kcal:570, p:18.5, c:29.1, g:46.3, fib:3.7, medida:"1 punhado ≈ 30 g", porcoes:[15,30]},
- {id:"castanha-para", nome:"Castanha-do-pará", cat:"Gorduras e sementes", kcal:643, p:14.5, c:15.1, g:63.5, fib:7.9, medida:"2 unidades ≈ 10 g", porcoes:[10,20]},
+ {id:"castanha-para", nome:"Castanha-do-pará", cat:"Gorduras e sementes", kcal:643, p:14.5, c:15.1, g:63.5, fib:7.9, medida:"2 unidades ≈ 10 g", porcoes:[10,20], un:{g:5, nome:"unidade"}},
  {id:"chia", nome:"Semente de chia", cat:"Gorduras e sementes", kcal:486, p:16.5, c:42.1, g:30.7, fib:34.4, medida:"1 colher de sopa ≈ 12 g", porcoes:[12,24]},
  {id:"linhaca", nome:"Semente de linhaça", cat:"Gorduras e sementes", kcal:495, p:14.1, c:43.3, g:32.3, fib:33.5, medida:"1 colher de sopa ≈ 12 g", porcoes:[12,24]},
  {id:"amendoas", nome:"Amêndoas torradas", cat:"Gorduras e sementes", kcal:581, p:18.6, c:29.5, g:47.3, fib:11.6, medida:"1 punhado ≈ 30 g", porcoes:[15,30]},
- {id:"nozes", nome:"Nozes", cat:"Gorduras e sementes", kcal:620, p:14.0, c:18.4, g:59.4, fib:7.2, medida:"3 unidades ≈ 24 g", porcoes:[12,24,36]},
+ {id:"nozes", nome:"Nozes", cat:"Gorduras e sementes", kcal:620, p:14.0, c:18.4, g:59.4, fib:7.2, medida:"3 unidades ≈ 24 g", porcoes:[12,24,36], un:{g:8, nome:"unidade"}},
  {id:"semente-abobora", nome:"Semente de abóbora torrada", cat:"Gorduras e sementes", kcal:559, p:30.2, c:10.7, g:49.0, fib:6.0, medida:"1 colher de sopa ≈ 15 g", porcoes:[15,30]},
  {id:"coco-ralado", nome:"Coco ralado fresco", cat:"Gorduras e sementes", kcal:406, p:3.7, c:10.4, g:42.0, fib:5.4, medida:"2 colheres de sopa ≈ 20 g", porcoes:[20,40]},
  {id:"azeitona", nome:"Azeitona verde", cat:"Gorduras e sementes", kcal:137, p:1.2, c:4.5, g:13.0, fib:3.8, medida:"8 unidades ≈ 30 g", porcoes:[30,60]},
+
+ // Fast-food e doces — para registrar os dias em que a dieta "fura" e compensar nas próximas refeições
+ {id:"pizza-mucarela", nome:"Pizza de muçarela", cat:"Fast-food e doces", kcal:267, p:11.0, c:32.0, g:10.5, fib:1.8, medida:"1 fatia média ≈ 125 g", porcoes:[125,250,375], un:{g:125, nome:"fatia"}},
+ {id:"hamburguer", nome:"Hambúrguer (lanche completo)", cat:"Fast-food e doces", kcal:254, p:12.5, c:24.0, g:12.0, fib:1.5, medida:"1 lanche ≈ 180 g", porcoes:[180,360], un:{g:180, nome:"unidade"}, veg:false},
+ {id:"cachorro-quente", nome:"Cachorro-quente", cat:"Fast-food e doces", kcal:260, p:9.5, c:26.0, g:13.0, fib:1.2, medida:"1 unidade ≈ 150 g", porcoes:[150,300], un:{g:150, nome:"unidade"}, veg:false},
+ {id:"coxinha", nome:"Coxinha de frango frita", cat:"Fast-food e doces", kcal:283, p:9.0, c:30.0, g:14.0, fib:1.0, medida:"1 unidade média ≈ 80 g", porcoes:[80,160], un:{g:80, nome:"unidade"}, veg:false},
+ {id:"pastel-carne", nome:"Pastel de carne frito", cat:"Fast-food e doces", kcal:388, p:9.6, c:33.0, g:24.0, fib:1.3, medida:"1 unidade média ≈ 80 g", porcoes:[80,160], un:{g:80, nome:"unidade"}, veg:false},
+ {id:"batata-frita", nome:"Batata frita", cat:"Fast-food e doces", kcal:312, p:3.3, c:36.0, g:16.0, fib:3.0, medida:"1 porção pequena ≈ 100 g", porcoes:[100,150,250]},
+ {id:"refrigerante", nome:"Refrigerante (cola)", cat:"Fast-food e doces", kcal:42, p:0.0, c:10.5, g:0.0, fib:0, medida:"1 lata ≈ 350 ml (350 g)", porcoes:[350,700], un:{g:350, nome:"lata"}},
+ {id:"cerveja", nome:"Cerveja pilsen", cat:"Fast-food e doces", kcal:41, p:0.5, c:3.3, g:0.0, fib:0, medida:"1 lata ≈ 350 ml (350 g)", porcoes:[350,700,1050], un:{g:350, nome:"lata"}},
+ {id:"chocolate-leite", nome:"Chocolate ao leite", cat:"Fast-food e doces", kcal:540, p:7.2, c:59.0, g:30.0, fib:2.2, medida:"1 barra pequena ≈ 25 g", porcoes:[25,50,100], un:{g:25, nome:"barra"}},
+ {id:"brigadeiro", nome:"Brigadeiro", cat:"Fast-food e doces", kcal:370, p:4.0, c:60.0, g:12.0, fib:0.5, medida:"1 unidade ≈ 20 g", porcoes:[20,40,60], un:{g:20, nome:"unidade"}},
+ {id:"doce-leite", nome:"Doce de leite", cat:"Fast-food e doces", kcal:306, p:5.5, c:57.0, g:6.5, fib:0, medida:"1 colher de sopa ≈ 20 g", porcoes:[20,40,60]},
+ {id:"sorvete", nome:"Sorvete de massa", cat:"Fast-food e doces", kcal:207, p:3.5, c:24.0, g:11.0, fib:0, medida:"1 bola ≈ 60 g", porcoes:[60,120,180], un:{g:60, nome:"bola"}},
+ {id:"bolacha-recheada", nome:"Bolacha recheada", cat:"Fast-food e doces", kcal:472, p:5.4, c:70.0, g:19.0, fib:1.5, medida:"1 unidade ≈ 13 g", porcoes:[13,39,65], un:{g:13, nome:"unidade"}},
+ {id:"salgadinho", nome:"Salgadinho de pacote", cat:"Fast-food e doces", kcal:520, p:6.5, c:60.0, g:28.0, fib:2.0, medida:"1 pacote pequeno ≈ 50 g", porcoes:[25,50,100], un:{g:50, nome:"pacote"}},
+ {id:"acai-tigela", nome:"Açaí na tigela (com xarope)", cat:"Fast-food e doces", kcal:110, p:1.2, c:21.5, g:3.0, fib:1.5, medida:"1 tigela pequena ≈ 300 g", porcoes:[150,300,450], un:{g:300, nome:"tigela"}},
 
  // Mais fontes de fibra
  {id:"farelo-aveia", nome:"Farelo de aveia", cat:"Carboidratos", kcal:246, p:17.3, c:66.2, g:7.0, fib:15.4, medida:"2 colheres de sopa ≈ 20 g", porcoes:[20,40]},
@@ -542,7 +568,7 @@ const ALIMENTOS = [
  {id:"quiabo", nome:"Quiabo cozido", cat:"Vegetais", kcal:33, p:2.0, c:6.7, g:0.3, fib:4.6, medida:"3 colheres de sopa ≈ 60 g", porcoes:[60,100]},
 ];
 
-const CATEGORIAS = ["Todos","Carboidratos","Proteínas","Leguminosas","Frutas","Vegetais","Laticínios","Gorduras e sementes","Ricos em fibra"];
+const CATEGORIAS = ["Todos","Carboidratos","Proteínas","Leguminosas","Frutas","Vegetais","Laticínios","Gorduras e sementes","Fast-food e doces","Ricos em fibra"];
 const LIMIAR_FIBRA = 4; // g de fibra por 100 g para entrar no filtro "Ricos em fibra"
 
 const OBJETIVOS = [
@@ -574,6 +600,22 @@ const REFS_PADRAO = ["Café da manhã","Lanche da manhã","Almoço","Lanche da t
 const $ = s => document.querySelector(s);
 const fmt = (n, dec=0) => n.toLocaleString("pt-BR",{minimumFractionDigits:dec, maximumFractionDigits:dec});
 const alimento = id => ALIMENTOS.find(a=>a.id===id);
+/* alimentos contáveis (a.un): exibe quantidades em unidades; internamente tudo segue em gramas */
+function qtdCurta(a, g){
+  if(!a.un) return `${fmt(g)} g`;
+  const n = g / a.un.g;
+  const nome = Math.abs(n - 1) < 0.01 ? a.un.nome : a.un.nome + "s";
+  return `${fmt(n, n % 1 ? 1 : 0)} ${nome}`;
+}
+function descreveQtd(a, g){
+  return a.un ? `${qtdCurta(a, g)} (${fmt(g)} g)` : `${fmt(g)} g`;
+}
+/* arredonda gramas para meia unidade, quando o alimento é contável */
+function ajustaPorcaoUn(a, g){
+  if(!a.un) return g;
+  const n = Math.max(0.5, Math.round((g / a.un.g) * 2) / 2);
+  return Math.round(n * a.un.g);
+}
 function nutri(it){
   const a = alimento(it.foodId), f = it.gramas/100;
   return {kcal:a.kcal*f, p:a.p*f, c:a.c*f, g:a.g*f, fib:a.fib*f};
@@ -740,11 +782,16 @@ function renderRefeicoes(){
       ? `<li class="vazio">Nenhum alimento ainda. Toque em “Adicionar alimento”.</li>`
       : r.itens.map((it, ii)=>{
           const a = alimento(it.foodId), n = nutri(it);
+          const un = a.un;
+          const val = un ? +(it.gramas / un.g).toFixed(1) : it.gramas;
           return `<li class="item">
             <div><span class="al-nome">${a.nome}</span><span class="al-medida">${a.medida}</span></div>
-            <input class="qtd" type="number" min="1" max="2000" step="1" value="${it.gramas}"
-                   aria-label="Quantidade em gramas de ${a.nome}"
-                   data-ref="${ri}" data-item="${ii}">
+            <div class="qtd-wrap">
+              <input class="qtd" type="number" min="${un?0.5:1}" max="${un?60:2000}" step="${un?0.5:1}" value="${val}"
+                     aria-label="Quantidade ${un?`em ${un.nome}s`:"em gramas"} de ${a.nome}"
+                     data-un="${un?un.g:""}" data-ref="${ri}" data-item="${ii}">
+              <span class="qtd-un">${un ? un.nome+"s" : "g"}</span>
+            </div>
             <div class="macros"><b>${fmt(n.kcal)} kcal</b><br>P ${fmt(n.p,1)} · C ${fmt(n.c,1)} · G ${fmt(n.g,1)}</div>
             <button class="btn-troca" data-troca-ref="${ri}" data-troca-item="${ii}" title="Substituir por alimento equivalente" aria-label="Substituir ${a.nome} por equivalente">⇄</button>
             <button class="btn-x" data-rem-ref="${ri}" data-rem-item="${ii}" aria-label="Remover ${a.nome}">✕</button>
@@ -764,7 +811,9 @@ function renderRefeicoes(){
   // eventos
   box.querySelectorAll(".qtd").forEach(inp=>{
     inp.addEventListener("input", e=>{
-      const g = parseFloat(e.target.value);
+      const v = parseFloat(e.target.value);
+      const unG = parseFloat(e.target.dataset.un);
+      const g = unG ? Math.round(v * unG) : v;
       if(!g || g<1) return;
       refeicoes[+e.target.dataset.ref].itens[+e.target.dataset.item].gramas = g;
       atualizaNumeros();
@@ -866,7 +915,7 @@ function renderPainel(){
 
 /* ============ "Quanto falta" + sugestões ============ */
 const SUG_PROT_PADRAO = ["frango-peito","atum-lata","ovo","whey"];
-const SUG_PROT_VEG    = ["tofu","pts-soja","ovo","whey"];
+const SUG_PROT_VEG    = ["seitan","clara-ovo","iogurte-proteico","tofu","pts-soja","ovo","whey"];
 const SUG_FIB  = ["feijao-carioca","aveia","chia","brocolis"];
 const SUG_KCAL = ["arroz-branco","batata-doce","banana","pasta-amendoim"];
 function poolProt(){ return (perfil && perfil.veg) ? SUG_PROT_VEG : SUG_PROT_PADRAO; }
@@ -875,7 +924,7 @@ function htmlSug(foodId, gramas, rotulo){
   const a = alimento(foodId), f = gramas/100;
   return `<button class="sug-item" data-sug-food="${foodId}" data-sug-g="${gramas}">
     <span class="mais" aria-hidden="true">+</span>
-    <span><b>${fmt(gramas)} g · ${a.nome}</b>
+    <span><b>${descreveQtd(a, gramas)} · ${a.nome}</b>
     <span class="det">${rotulo} · custa ${fmt(a.kcal*f)} kcal</span></span>
   </button>`;
 }
@@ -883,7 +932,7 @@ function gramasParaNutriente(a, falta, nutriPor100){
   if(nutriPor100 <= 0) return 0;
   const cap = a.porcoes[a.porcoes.length-1];
   const g = Math.round((falta / (nutriPor100/100)) / 5) * 5;
-  return Math.max(10, Math.min(g, cap));
+  return ajustaPorcaoUn(a, Math.max(10, Math.min(g, cap)));
 }
 
 function renderSugestoes(t){
@@ -902,7 +951,7 @@ function renderSugestoes(t){
       const k = nutri(it).kcal;
       if(k > maiorK){ maiorK = k; maior = it; refNome = r.nome; }
     }));
-    html += `<p class="excesso">Você está <b>${fmt(-restK)} kcal acima</b> da meta. Maior fonte calórica: <b>${fmt(maior.gramas)} g de ${alimento(maior.foodId).nome}</b> (${fmt(maiorK)} kcal, em ${refNome}). Reduza a porção ou use o botão ⇄ para trocar por um equivalente mais leve.</p>`;
+    html += `<p class="excesso">Você está <b>${fmt(-restK)} kcal acima</b> da meta. Maior fonte calórica: <b>${descreveQtd(alimento(maior.foodId), maior.gramas)} de ${alimento(maior.foodId).nome}</b> (${fmt(maiorK)} kcal, em ${refNome}). Reduza a porção ou use o botão ⇄ para trocar por um equivalente mais leve.</p>`;
   } else {
     let blocos = 0;
     if(faltaP > 8){
@@ -930,7 +979,7 @@ function renderSugestoes(t){
         SUG_KCAL.slice(0,3).map(id=>{
           const a = alimento(id);
           const cap = a.porcoes[a.porcoes.length-1];
-          const g = Math.max(10, Math.min(Math.round((restK/(a.kcal/100))/5)*5, cap));
+          const g = ajustaPorcaoUn(a, Math.max(10, Math.min(Math.round((restK/(a.kcal/100))/5)*5, cap)));
           return htmlSug(id, g, `+${fmt(a.kcal*g/100)} kcal`);
         }).join("") + `</div>`;
       temBotoes = true;
@@ -981,7 +1030,7 @@ function renderLista(){
           return `<button class="al-card" data-food="${a.id}">
             <span class="n">${a.nome}</span>
             <span class="m">${a.cat} · ${a.medida}</span>
-            <span class="eq"><span class="g-eq">≈ ${fmt(g)} g</span>
+            <span class="eq"><span class="g-eq">≈ ${qtdCurta(a, g)}</span>
             <span class="m-eq">${fmt(a.kcal*f)} kcal · P ${fmt(a.p*f,1)} · C ${fmt(a.c*f,1)} · G ${fmt(a.g*f,1)}</span></span>
           </button>`;
         }).join("");
@@ -1009,7 +1058,7 @@ function gramasEquivalentes(itemAtual, alvo){
   if(a.cat === "Proteínas" && alvo.p > 0) g = (a.p * itemAtual.gramas) / alvo.p;
   else if(alvo.kcal > 0) g = (a.kcal * itemAtual.gramas) / alvo.kcal;
   else g = itemAtual.gramas;
-  return Math.max(5, Math.min(1000, Math.round(g/5)*5));
+  return ajustaPorcaoUn(alvo, Math.max(5, Math.min(1000, Math.round(g/5)*5)));
 }
 
 function abrirTroca(ri, ii){
@@ -1017,7 +1066,7 @@ function abrirTroca(ri, ii){
   refDestino = null;
   const it = refeicoes[ri].itens[ii];
   const a = alimento(it.foodId);
-  $("#modal-titulo").textContent = `Substituir: ${fmt(it.gramas)} g de ${a.nome}`;
+  $("#modal-titulo").textContent = `Substituir: ${descreveQtd(a, it.gramas)} de ${a.nome}`;
   $("#qtd-painel").classList.remove("aberto");
   $("#busca").value = "";
   catAtiva = a.cat; // começa na mesma categoria (equivalentes mais coerentes)
@@ -1035,22 +1084,36 @@ function substituirAlimento(novoId){
 }
 function selecionaAlimento(id){
   alimentoSel = alimento(id);
+  const un = alimentoSel.un;
   $("#qtd-painel").classList.add("aberto");
   $("#sel-nome").textContent = alimentoSel.nome;
   $("#sel-medida").textContent = `Referência: ${alimentoSel.medida}`;
   $("#porcoes").innerHTML = alimentoSel.porcoes.map(g=>
-    `<button class="porcao" data-g="${g}">${g} g</button>`).join("");
+    `<button class="porcao" data-g="${g}">${qtdCurta(alimentoSel, g)}</button>`).join("");
   document.querySelectorAll(".porcao").forEach(b=>b.addEventListener("click", e=>{
-    $("#in-qtd").value = e.currentTarget.dataset.g; atualizaPrevia();
+    const g = +e.currentTarget.dataset.g;
+    $("#in-qtd").value = un ? +(g/un.g).toFixed(1) : g;
+    atualizaPrevia();
   }));
-  $("#in-qtd").value = alimentoSel.porcoes[0] || 100;
+  const inQtd = $("#in-qtd");
+  inQtd.min = un ? 0.5 : 1;
+  inQtd.step = un ? 0.5 : 1;
+  inQtd.max = un ? 60 : 2000;
+  $("#in-qtd-un").textContent = un ? un.nome + "s" : "gramas";
+  const g0 = alimentoSel.porcoes[0] || 100;
+  inQtd.value = un ? +(g0/un.g).toFixed(1) : g0;
   atualizaPrevia();
-  $("#in-qtd").focus();
+  inQtd.focus();
+}
+/* lê o input do modal e devolve sempre gramas */
+function gramasDoInput(){
+  const v = parseFloat($("#in-qtd").value) || 0;
+  return alimentoSel && alimentoSel.un ? Math.round(v * alimentoSel.un.g) : v;
 }
 function atualizaPrevia(){
   if(!alimentoSel) return;
-  const g = parseFloat($("#in-qtd").value)||0, f=g/100;
-  $("#previa").innerHTML = `${fmt(g)} g → <b>${fmt(alimentoSel.kcal*f)} kcal</b> · proteína ${fmt(alimentoSel.p*f,1)} g · carbo ${fmt(alimentoSel.c*f,1)} g · gordura ${fmt(alimentoSel.g*f,1)} g · fibra ${fmt(alimentoSel.fib*f,1)} g`;
+  const g = gramasDoInput(), f=g/100;
+  $("#previa").innerHTML = `${descreveQtd(alimentoSel, g)} → <b>${fmt(alimentoSel.kcal*f)} kcal</b> · proteína ${fmt(alimentoSel.p*f,1)} g · carbo ${fmt(alimentoSel.c*f,1)} g · gordura ${fmt(alimentoSel.g*f,1)} g · fibra ${fmt(alimentoSel.fib*f,1)} g`;
 }
 $("#in-qtd").addEventListener("input", atualizaPrevia);
 $("#busca").addEventListener("input", renderLista);
@@ -1080,8 +1143,8 @@ $("#modal-fundo").addEventListener("click", e=>{ if(e.target.id==="modal-fundo")
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") fecharModal(); });
 
 $("#btn-confirma-add").addEventListener("click", ()=>{
-  const g = parseFloat($("#in-qtd").value);
-  if(!alimentoSel || !g || g<1){ alert("Informe a quantidade em gramas."); return; }
+  const g = gramasDoInput();
+  if(!alimentoSel || !g || g<1){ alert("Informe a quantidade."); return; }
   if(refDestino === "consulta"){
     consultaItens.push({foodId: alimentoSel.id, gramas: g});
     fecharModal();
@@ -1131,10 +1194,15 @@ function renderConsulta(){
     ? `<li class="vazio">Nenhum alimento ainda. Toque em “Adicionar alimento” para consultar valores.</li>`
     : consultaItens.map((it, ii)=>{
         const a = alimento(it.foodId), n = nutri(it);
+        const un = a.un;
+        const val = un ? +(it.gramas / un.g).toFixed(1) : it.gramas;
         return `<li class="item" style="grid-template-columns:1fr 96px auto auto">
           <div><span class="al-nome">${a.nome}</span><span class="al-medida">${a.medida}</span></div>
-          <input class="qtd" type="number" min="1" max="2000" step="1" value="${it.gramas}"
-                 aria-label="Quantidade em gramas de ${a.nome}" data-cons="${ii}">
+          <div class="qtd-wrap">
+            <input class="qtd" type="number" min="${un?0.5:1}" max="${un?60:2000}" step="${un?0.5:1}" value="${val}"
+                   aria-label="Quantidade ${un?`em ${un.nome}s`:"em gramas"} de ${a.nome}" data-un="${un?un.g:""}" data-cons="${ii}">
+            <span class="qtd-un">${un ? un.nome+"s" : "g"}</span>
+          </div>
           <div class="macros"><b>${fmt(n.kcal)} kcal</b><br>P ${fmt(n.p,1)} · C ${fmt(n.c,1)} · G ${fmt(n.g,1)} · Fib ${fmt(n.fib,1)}</div>
           <button class="btn-x" data-cons-rem="${ii}" aria-label="Remover ${a.nome}">✕</button>
         </li>`;
@@ -1142,7 +1210,9 @@ function renderConsulta(){
 
   ul.querySelectorAll(".qtd").forEach(inp=>{
     inp.addEventListener("input", e=>{
-      const g = parseFloat(e.target.value);
+      const v = parseFloat(e.target.value);
+      const unG = parseFloat(e.target.dataset.un);
+      const g = unG ? Math.round(v * unG) : v;
       if(!g || g<1) return;
       consultaItens[+e.target.dataset.cons].gramas = g;
       // atualiza só os números, sem perder o foco do input
@@ -1190,7 +1260,7 @@ function montarFolha(){
       const a = alimento(it.foodId), n = nutri(it);
       linhas += `<tr>
         <td>${a.nome}</td>
-        <td class="num">${fmt(it.gramas)} g</td>
+        <td class="num">${descreveQtd(a, it.gramas)}</td>
         <td class="num">${fmt(n.kcal)}</td>
         <td class="num">${fmt(n.p,1)}</td>
         <td class="num">${fmt(n.c,1)}</td>
